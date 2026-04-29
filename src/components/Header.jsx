@@ -13,7 +13,7 @@ export default function Header() {
     <header className="header">
       <div className="wrap nav">
         <NavLink to="/" className="brand brand-logo" aria-label="Menvic Arquitectura">
-          <img src="/img/brand/menvic-logo.svg" alt="Menvic Arquitectura" style={{ width: '160px', height: 'auto', display: 'block' }} />
+          <img src="/img/brand/menvic-logo.png" alt="Menvic Arquitectura" style={{ width: '160px', height: 'auto', display: 'block' }} />
         </NavLink>
         <nav className="nav-links">
           {links.map((link) => <NavLink key={link.to} to={link.to}>{link.label}</NavLink>)}
