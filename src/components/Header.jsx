@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="wrap nav">
-        <NavLink to="/" className="brand"><strong>mendieta</strong><span>studio</span></NavLink>
+        <NavLink to="/" className="brand"><strong>menvic</strong><span>arquitectura</span></NavLink>
         <nav className="nav-links">
           {links.map((link) => <NavLink key={link.to} to={link.to}>{link.label}</NavLink>)}
         </nav>
