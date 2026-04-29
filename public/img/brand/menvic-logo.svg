@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 547" role="img" aria-labelledby="title"><title id="title">Menvic Arquitectura</title><image href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2w==" width="1600" height="547" preserveAspectRatio="xMidYMid meet"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 547" role="img" aria-labelledby="title">
+  <title id="title">Menvic Arquitectura</title>
+  <rect width="448" height="547" fill="#000000"/>
+  <rect x="448" width="1152" height="547" fill="#ffffff"/>
+  <text x="54" y="356" fill="#ffffff" font-family="Arial Black, Helvetica, Arial, sans-serif" font-size="382" font-weight="900" letter-spacing="-32">m</text>
+  <text x="430" y="356" fill="#000000" font-family="Arial Black, Helvetica, Arial, sans-serif" font-size="382" font-weight="900" letter-spacing="-28">envic</text>
+  <text x="456" y="514" fill="#000000" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="174" font-weight="300" letter-spacing="35">arquitectura</text>
+</svg>
