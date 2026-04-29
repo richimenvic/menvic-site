@@ -9,16 +9,16 @@ export default function Home() {
       <section className="hero hero-editorial">
         <div className="wrap hero-grid home-hero-grid">
           <div>
-            <div className="kicker home-kicker">Mendieta Studio · Arquitectura</div>
-            <h1 className="home-hero-title">Diseñamos arquitectura contemporánea con precisión técnica y atención al detalle.</h1>
-            <p className="lead">Proyectos residenciales, institucionales y documentación técnica de alta calidad.</p>
+            <div className="kicker home-kicker">Menvic Arquitectura</div>
+            <h1 className="home-hero-title">Arquitectura, técnica y gestión de proyectos en Santa Cruz, Bolivia.</h1>
+            <p className="lead">Desarrollamos proyectos arquitectónicos con enfoque funcional, técnico y contemporáneo, acompañando cada etapa desde la idea inicial hasta la documentación y coordinación del proyecto.</p>
             <div className="home-hero-actions">
-              <Link className="cta-link" to="/proyectos">Ver Proyectos</Link>
-              <Link className="cta-link cta-link--ghost" to="/contacto">Contactar</Link>
+              <Link className="cta-link" to="/contacto">Contactar</Link>
+              <Link className="cta-link cta-link--ghost" to="/servicios">Servicios</Link>
             </div>
           </div>
           <figure className="hero-image hero-image-photo">
-            <img className="media-img" src="/img/projects/prodimsa-lateral-hero.webp" alt="Vista exterior del Centro Social Corporativo PRODIMSA, proyecto de Mendieta Studio" loading="eager" />
+            <img className="media-img" src="/img/projects/prodimsa-lateral-hero.webp" alt="Vista exterior del Centro Social Corporativo PRODIMSA, proyecto de Menvic Arquitectura" loading="eager" />
           </figure>
         </div>
       </section>
@@ -38,7 +38,7 @@ export default function Home() {
                 </Link>
                 <div className="home-project-content">
                   <h3>{project.title}</h3>
-                  <p>{[project.type || project.category, project.location || 'Córdoba, España', project.year].filter(Boolean).join(' / ')}</p>
+                  <p>{[project.type || project.category, project.location || 'Santa Cruz, Bolivia', project.year].filter(Boolean).join(' / ')}</p>
                 </div>
               </article>
             ))}
@@ -52,9 +52,9 @@ export default function Home() {
             <div className="kicker home-kicker">Servicios</div>
           </div>
           <div className="home-services-grid">
-            <article className="box home-service-card"><h3>Arquitectura</h3><p>Diseño y desarrollo integral de proyectos arquitectónicos.</p></article>
-            <article className="box home-service-card"><h3>Documentación Técnica</h3><p>Producción de documentación ejecutiva precisa para construcción.</p></article>
-            <article className="box home-service-card"><h3>Coordinación BIM</h3><p>Coordinación interdisciplinar y control técnico digital.</p></article>
+            <article className="box home-service-card"><h3>Diseño arquitectónico</h3><p>Desarrollo de propuestas arquitectónicas funcionales, técnicas y contemporáneas.</p></article>
+            <article className="box home-service-card"><h3>Documentación técnica</h3><p>Producción de documentación clara y precisa para el desarrollo y coordinación del proyecto.</p></article>
+            <article className="box home-service-card"><h3>Gestión y coordinación</h3><p>Acompañamiento técnico en la coordinación del proyecto y apoyo al proceso constructivo.</p></article>
           </div>
         </div>
       </section>
@@ -66,7 +66,7 @@ export default function Home() {
             <h2>Sobre el Estudio</h2>
           </div>
           <div>
-            <p className="section-copy">Mendieta Studio desarrolla proyectos arquitectónicos con un enfoque en diseño, detalle técnico y coordinación integral del proceso constructivo.</p>
+            <p className="section-copy">Menvic Arquitectura es un estudio de arquitectura con sede en Santa Cruz, Bolivia, enfocado en diseño arquitectónico, desarrollo técnico, documentación, coordinación y gestión de proyectos.</p>
             <Link className="cta-link" to="/estudio">Conocer el Estudio</Link>
           </div>
         </div>
