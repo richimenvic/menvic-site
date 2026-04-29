@@ -1,22 +1,32 @@
 const serviceItems = [
   {
-    title: 'Arquitectura',
+    title: 'Diseño arquitectónico',
     description:
-      'Diseño y desarrollo de proyectos arquitectónicos desde fases conceptuales hasta documentación ejecutiva.'
+      'Desarrollo de propuestas arquitectónicas desde fases conceptuales, con enfoque funcional, técnico y contemporáneo.'
+  },
+  {
+    title: 'Anteproyectos y proyectos',
+    description:
+      'Definición y desarrollo de proyectos arquitectónicos, integrando criterios de diseño, programa, viabilidad y coordinación.'
   },
   {
     title: 'Documentación técnica',
-    description: 'Producción de documentación constructiva precisa, coordinada y orientada a obra.'
+    description: 'Producción de documentación clara, precisa y coordinada para el desarrollo del proyecto y su proceso constructivo.'
+  },
+  {
+    title: 'Gestión y coordinación de proyectos',
+    description:
+      'Acompañamiento técnico en la organización, revisión y coordinación de la información del proyecto.'
+  },
+  {
+    title: 'Supervisión y apoyo constructivo',
+    description:
+      'Apoyo al proceso constructivo mediante revisión técnica, seguimiento de información y coordinación con los equipos involucrados.'
   },
   {
     title: 'Coordinación BIM',
     description:
-      'Gestión y coordinación interdisciplinar de modelos digitales para control técnico y reducción de interferencias.'
-  },
-  {
-    title: 'Consultoría técnica',
-    description:
-      'Asesoramiento especializado en documentación, revisión técnica, optimización de proyectos y soporte a equipos externos.'
+      'Coordinación digital de información del proyecto cuando el alcance y las necesidades técnicas lo requieren.'
   }
 ]
 
@@ -28,8 +38,7 @@ export default function Services() {
           <div className="kicker">Servicios</div>
           <h1>Servicios profesionales</h1>
           <p className="lead">
-            Servicios profesionales orientados al desarrollo integral de proyectos arquitectónicos y soporte
-            técnico especializado.
+            Servicios orientados al diseño arquitectónico, desarrollo técnico, documentación, gestión y coordinación de proyectos.
           </p>
         </div>
       </main>
