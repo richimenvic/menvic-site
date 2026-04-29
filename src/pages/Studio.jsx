@@ -4,29 +4,29 @@ const studioBlocks = [
   {
     title: 'Enfoque',
     text: [
-      'Entendemos la arquitectura como la síntesis entre concepto, técnica y ejecución.',
-      'Cada proyecto se desarrolla con una aproximación rigurosa orientada a producir soluciones sobrias, precisas y duraderas, capaces de responder tanto a las necesidades funcionales como a la calidad espacial y constructiva de la obra.'
+      'Entendemos la arquitectura como la integración entre concepto, técnica y gestión.',
+      'Cada proyecto se desarrolla con una aproximación clara y rigurosa, orientada a producir soluciones funcionales, contemporáneas y viables desde el punto de vista constructivo.'
     ]
   },
   {
     title: 'Metodología',
     text: [
-      'Nuestro proceso de trabajo integra diseño, documentación y coordinación técnica desde etapas tempranas del proyecto.',
-      'Aplicamos metodologías BIM y sistemas avanzados de documentación para garantizar mayor control, precisión y coherencia durante todo el desarrollo arquitectónico.'
+      'Nuestro proceso de trabajo integra diseño, desarrollo técnico, documentación y coordinación desde etapas tempranas del proyecto.',
+      'Acompañamos la evolución del proyecto para mantener coherencia entre la idea arquitectónica, la información técnica y las necesidades de ejecución.'
     ]
   },
   {
     title: 'Experiencia',
     text: [
-      'Mendieta Studio participa en proyectos de distinta escala y complejidad, colaborando en entornos locales e internacionales.',
-      'Nuestra experiencia abarca desarrollos residenciales, equipamientos institucionales, arquitectura corporativa y soporte técnico especializado para equipos externos.'
+      'Menvic Arquitectura participa en proyectos de distinta escala y complejidad, con base en Santa Cruz, Bolivia.',
+      'Nuestra experiencia abarca diseño arquitectónico, documentación técnica, coordinación de proyectos, gestión y apoyo al proceso constructivo.'
     ]
   },
   {
     title: 'Filosofía',
     text: [
-      'Creemos que la calidad arquitectónica surge de la correcta integración entre diseño y ejecución.',
-      'Por ello, cada decisión proyectual se evalúa no solo desde su valor formal, sino también desde su viabilidad técnica, eficiencia constructiva y permanencia en el tiempo.'
+      'Creemos que la calidad arquitectónica surge de la correcta relación entre diseño, técnica y ejecución.',
+      'Por ello, cada decisión proyectual se evalúa desde su valor funcional, su precisión técnica y su capacidad para aportar soluciones claras y duraderas.'
     ]
   }
 ]
@@ -37,12 +37,12 @@ export default function Studio() {
       <main className="page-hero">
         <div className="wrap studio-intro">
           <div className="kicker">Estudio</div>
-          <h1>Mendieta Studio</h1>
+          <h1>Menvic Arquitectura</h1>
           <p className="lead studio-lead">
-            Mendieta Studio es un estudio de arquitectura enfocado en el desarrollo de proyectos contemporáneos con especial atención al rigor técnico, la precisión documental y la coordinación integral del proceso constructivo.
+            Menvic Arquitectura es un estudio de arquitectura con sede en Santa Cruz, Bolivia, enfocado en el desarrollo de proyectos con atención al diseño, la documentación técnica, la coordinación y la gestión del proceso proyectual.
           </p>
           <p className="lead studio-lead">
-            Trabajamos en proyectos residenciales, institucionales y corporativos, abordando cada encargo desde una visión equilibrada entre diseño, funcionalidad y viabilidad constructiva.
+            Trabajamos cada encargo desde una visión equilibrada entre funcionalidad, criterio técnico y calidad arquitectónica, acompañando las distintas etapas del proyecto.
           </p>
         </div>
       </main>
