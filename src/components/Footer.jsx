@@ -5,9 +5,10 @@ export default function Footer() {
     <footer>
       <div className="wrap footer-inner footer-detailed">
         <div>
-          <strong>Mendieta Studio</strong>
-          <p className="footer-contact"><a href="mailto:contacto@mendietastudio.com">contacto@mendietastudio.com</a></p>
-          <p className="footer-contact">Córdoba, España</p>
+          <strong>Menvic Arquitectura</strong>
+          <p className="footer-contact">Santa Cruz, Bolivia</p>
+          <p className="footer-contact">menvic.com</p>
+          <p className="footer-contact">Tel. / WhatsApp: 75019441</p>
         </div>
         <nav className="legal">
           <NavLink to="/aviso-legal">Aviso Legal</NavLink>
