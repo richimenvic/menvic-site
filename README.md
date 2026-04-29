@@ -1,11 +1,11 @@
-# Mendieta Studio — Sitio Web
+# Menvic Arquitectura — Sitio Web
 
-Sitio oficial de Mendieta Studio, desarrollado con React + Vite y desplegado mediante GitHub Pages con dominio personalizado `mendietastudio.com`.
+Sitio oficial de Menvic Arquitectura, desarrollado con React + Vite y desplegado mediante GitHub Pages con dominio personalizado `menvic.com`.
 
 ## Qué se corrigió
 
 - Se corrigió la estrategia de rutas para evitar la pantalla blanca cuando GitHub Pages sirve rutas directas.
-- Se ajustó el `base` de Vite a `/` para funcionar correctamente con el dominio personalizado `mendietastudio.com` y evitar problemas de carga de assets en producción.
+- Se ajustó el `base` de Vite a `/` para funcionar correctamente con el dominio personalizado `menvic.com` y evitar problemas de carga de assets en producción.
 - Se robusteció el fallback SPA en `public/404.html` para redirigir correctamente tanto en `*.github.io` como en dominio custom.
 - Se mantiene `BrowserRouter` con `basename` dinámico según host para navegación interna correcta.
 - Se conserva el formulario de contacto con Web3Forms.
@@ -40,4 +40,4 @@ El workflow `.github/workflows/deploy.yml`:
 Para que funcione en producción:
 
 - En GitHub Settings → Pages, seleccionar **Build and deployment: GitHub Actions**.
-- Mantener el archivo `public/CNAME` con `mendietastudio.com`.
+- Mantener el archivo `public/CNAME` con `menvic.com`.
