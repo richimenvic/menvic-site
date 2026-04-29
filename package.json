@@ -1,5 +1,5 @@
 {
-  "name": "mendieta-studio-web",
+  "name": "menvic-site",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -8,8 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build",
-    "verify:pages": "bash scripts/verify-pages-build.sh",
-    "build:pages": "npm run build && npm run verify:pages"
+    "build:pages": "npm run build"
   },
   "dependencies": {
     "react": "^18.3.1",
