@@ -1,0 +1,30 @@
+/* Mobile layout fixes */
+@media (max-width: 768px) {
+  .featured-project-media {
+    display: block;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: auto;
+    padding: 0;
+  }
+
+  .featured-project-media-img {
+    position: static;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transform: none;
+  }
+
+  .featured-project:hover .featured-project-media-img,
+  .featured-project:focus-within .featured-project-media-img {
+    transform: none;
+  }
+
+  .featured-project-media::before,
+  .featured-project-media::after {
+    pointer-events: none;
+  }
+}
