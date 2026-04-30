@@ -10,11 +10,11 @@ export default function Home() {
         <div className="wrap hero-grid home-hero-grid">
           <div>
             <div className="kicker home-kicker">Menvic Arquitectura</div>
-            <h1 className="home-hero-title">Arquitectura, técnica y gestión de proyectos en Santa Cruz, Bolivia.</h1>
-            <p className="lead">Desarrollamos proyectos arquitectónicos con enfoque funcional, técnico y contemporáneo, acompañando cada etapa desde la idea inicial hasta la documentación y coordinación del proyecto.</p>
+            <h1 className="home-hero-title">Diseñamos arquitectura contemporánea con precisión técnica y atención al detalle.</h1>
+            <p className="lead">Proyectos residenciales, institucionales y documentación técnica de alta calidad.</p>
             <div className="home-hero-actions">
-              <Link className="cta-link" to="/contacto">Contactar</Link>
-              <Link className="cta-link cta-link--ghost" to="/servicios">Servicios</Link>
+              <Link className="cta-link" to="/proyectos">Ver proyectos</Link>
+              <Link className="cta-link cta-link--ghost" to="/contacto">Contactar</Link>
             </div>
           </div>
           <figure className="hero-image hero-image-photo">
@@ -23,10 +23,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section section-featured">
+      <section className="section section-featured" id="proyectos">
         <div className="wrap">
           <div className="section-head">
             <div className="kicker home-kicker">Proyectos destacados</div>
+            <div>
+              <h2>Proyectos seleccionados</h2>
+              <p className="section-copy">Una selección de trabajos residenciales, institucionales y de equipamiento desarrollados con criterio técnico, coordinación y atención al detalle.</p>
+            </div>
           </div>
           <div className="home-project-grid">
             {homeFeaturedProjects.map((project) => (
@@ -43,6 +47,9 @@ export default function Home() {
               </article>
             ))}
           </div>
+          <div className="home-hero-actions">
+            <Link className="cta-link" to="/proyectos">Ver todos los proyectos</Link>
+          </div>
         </div>
       </section>
 
@@ -50,11 +57,15 @@ export default function Home() {
         <div className="wrap">
           <div className="section-head">
             <div className="kicker home-kicker">Servicios</div>
+            <div>
+              <h2>Diseño, documentación y coordinación</h2>
+              <p className="section-copy">Acompañamos el proyecto desde la idea inicial hasta la documentación técnica, la coordinación con especialidades y el apoyo al proceso constructivo.</p>
+            </div>
           </div>
           <div className="home-services-grid">
             <article className="box home-service-card"><h3>Diseño arquitectónico</h3><p>Desarrollo de propuestas arquitectónicas funcionales, técnicas y contemporáneas, adaptadas a las necesidades de cada proyecto.</p></article>
             <article className="box home-service-card"><h3>Documentación técnica</h3><p>Producción de planos, documentación y expedientes claros y precisos para el desarrollo, coordinación y tramitación del proyecto.</p></article>
-            <article className="box home-service-card"><h3>Gestión y coordinación</h3><p>Acompañamiento técnico durante el desarrollo del proyecto, coordinación con especialidades, apoyo en licencias y seguimiento del proceso constructivo, respaldado por experiencia previa en ejecución, supervisión y gestión integral de obra.</p></article>
+            <article className="box home-service-card"><h3>Gestión y coordinación</h3><p>Acompañamiento técnico durante el desarrollo del proyecto, coordinación con especialidades, apoyo en licencias y seguimiento del proceso constructivo.</p></article>
           </div>
         </div>
       </section>
@@ -72,7 +83,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="contacto">
         <div className="wrap">
           <div className="home-cta-section">
             <div>
