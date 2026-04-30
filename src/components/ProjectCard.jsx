@@ -1,11 +1,41 @@
 import { Link } from 'react-router-dom'
 
 export default function ProjectCard({ project }) {
+  const imageStyle = project.cardImage
+    ? { backgroundImage: `url(${project.cardImage})` }
+    : undefined
+
   return (
     <article className="featured-project">
-      <Link className="featured-project-media" to={`/proyectos/${project.slug}`} aria-label={`Ver proyecto ${project.title}`}>
+      <Link
+        className="featured-project-media"
+        to={`/proyectos/${project.slug}`}
+        aria-label={`Ver proyecto ${project.title}`}
+        style={{
+          ...imageStyle,
+          display: 'block',
+          width: '100%',
+          minHeight: 'clamp(240px, 62vw, 560px)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
         {project.cardImage
-          ? <img className="media-img featured-project-media-img" src={project.cardImage} alt={`Imagen principal del proyecto ${project.title}`} loading="lazy" />
+          ? (
+            <img
+              className="media-img featured-project-media-img"
+              src={project.cardImage}
+              alt={`Imagen principal del proyecto ${project.title}`}
+              loading="lazy"
+              style={{
+                display: 'block',
+                width: '100%',
+                minHeight: 'clamp(240px, 62vw, 560px)',
+                objectFit: 'cover',
+              }}
+            />
+          )
           : null}
       </Link>
       <div className="featured-project-content">
