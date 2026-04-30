@@ -52,9 +52,9 @@ export default function Home() {
             <div className="kicker home-kicker">Servicios</div>
           </div>
           <div className="home-services-grid">
-            <article className="box home-service-card"><h3>Diseño arquitectónico</h3><p>Desarrollo de propuestas arquitectónicas funcionales, técnicas y contemporáneas.</p></article>
-            <article className="box home-service-card"><h3>Documentación técnica</h3><p>Producción de documentación clara y precisa para el desarrollo y coordinación del proyecto.</p></article>
-            <article className="box home-service-card"><h3>Gestión y coordinación</h3><p>Acompañamiento técnico en la coordinación del proyecto y apoyo al proceso constructivo.</p></article>
+            <article className="box home-service-card"><h3>Diseño arquitectónico</h3><p>Desarrollo de propuestas arquitectónicas funcionales, técnicas y contemporáneas, adaptadas a las necesidades de cada proyecto.</p></article>
+            <article className="box home-service-card"><h3>Documentación técnica</h3><p>Producción de planos, documentación y expedientes claros y precisos para el desarrollo, coordinación y tramitación del proyecto.</p></article>
+            <article className="box home-service-card"><h3>Gestión y coordinación</h3><p>Acompañamiento técnico durante el desarrollo del proyecto, coordinación con especialidades, apoyo en licencias y seguimiento del proceso constructivo, respaldado por experiencia previa en ejecución, supervisión y gestión integral de obra.</p></article>
           </div>
         </div>
       </section>
