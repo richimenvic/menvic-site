@@ -2,7 +2,7 @@ const serviceItems = [
   {
     title: 'Diseño arquitectónico',
     description:
-      'Desarrollo de propuestas arquitectónicas desde fases conceptuales, con enfoque funcional, técnico y contemporáneo.'
+      'Desarrollo de propuestas arquitectónicas funcionales, técnicas y contemporáneas, adaptadas a las necesidades de cada proyecto.'
   },
   {
     title: 'Anteproyectos y proyectos',
@@ -11,12 +11,13 @@ const serviceItems = [
   },
   {
     title: 'Documentación técnica',
-    description: 'Producción de documentación clara, precisa y coordinada para el desarrollo del proyecto y su proceso constructivo.'
+    description:
+      'Producción de planos, documentación y expedientes claros y precisos para el desarrollo, coordinación y tramitación del proyecto.'
   },
   {
-    title: 'Gestión y coordinación de proyectos',
+    title: 'Gestión y coordinación',
     description:
-      'Acompañamiento técnico en la organización, revisión y coordinación de la información del proyecto.'
+      'Acompañamiento técnico durante el desarrollo del proyecto, coordinación con especialidades, apoyo en licencias y seguimiento del proceso constructivo, respaldado por experiencia previa en ejecución, supervisión y gestión integral de obra.'
   },
   {
     title: 'Supervisión y apoyo constructivo',
