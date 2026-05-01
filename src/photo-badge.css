@@ -1,0 +1,44 @@
+/* Visible + fotos label over project images */
+
+.project-card-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card-badge {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, .62);
+  background: rgba(10, 10, 9, .62);
+  color: #fff;
+  font-size: .62rem;
+  line-height: 1;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background-color .28s ease, border-color .28s ease, transform .28s ease;
+}
+
+.project-card-image:hover .project-card-badge,
+.project-card-image:focus-visible .project-card-badge {
+  background: rgba(10, 10, 9, .82);
+  border-color: rgba(255, 255, 255, .86);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .project-card-badge {
+    right: 12px;
+    bottom: 12px;
+    padding: 8px 11px;
+    font-size: .58rem;
+    letter-spacing: .16em;
+  }
+}
