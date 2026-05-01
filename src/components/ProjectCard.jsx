@@ -5,6 +5,11 @@ export default function ProjectCard({ project }) {
     ? { backgroundImage: `url(${project.cardImage})` }
     : undefined
 
+  const totalImages = [
+    project.detailImage || project.image || project.cardImage || project.heroImage,
+    ...(project.galleryImages || []),
+  ].filter(Boolean).length
+
   return (
     <article className="featured-project">
       <Link
