@@ -8,7 +8,7 @@ export default function ProjectCard({ project }) {
   return (
     <article className="featured-project">
       <Link
-        className="featured-project-media"
+        className="featured-project-media project-card-image"
         to={`/proyectos/${project.slug}`}
         aria-label={`Ver proyecto ${project.title}`}
         style={{
@@ -21,6 +21,7 @@ export default function ProjectCard({ project }) {
           backgroundRepeat: 'no-repeat',
         }}
       >
+        <span className="project-card-badge" aria-hidden="true">+ fotos</span>
         {project.cardImage
           ? (
             <img
@@ -51,7 +52,7 @@ export default function ProjectCard({ project }) {
           {project.projectFor && <div><dt>Proyecto para</dt><dd>{project.projectFor}</dd></div>}
           <div><dt>Rol</dt><dd>{project.role}</dd></div>
         </dl>
-        <Link className="text-link" to={`/proyectos/${project.slug}`}>Ver proyecto</Link>
+        <Link className="text-link" to={`/proyectos/${project.slug}`}>Ver proyecto completo</Link>
       </div>
     </article>
   )
