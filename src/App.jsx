@@ -13,14 +13,14 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import CookiesPolicy from './pages/CookiesPolicy'
 import { siteUrl, updateSeo } from './seo'
 
-const defaultDescription = 'Estudio de arquitectura en Santa Cruz, Bolivia, especializado en diseño arquitectónico, documentación técnica, gestión y coordinación de proyectos.'
+const defaultDescription = 'Menvic Arquitectura desarrolla proyectos de arquitectura, documentación técnica, coordinación y construcción en Santa Cruz, Bolivia.'
 
 const seoByPath = {
-  '/': ['Menvic Arquitectura | Santa Cruz, Bolivia', defaultDescription],
-  '/proyectos': ['Proyectos de Arquitectura | Menvic Arquitectura', 'Proyectos seleccionados de Menvic Arquitectura en Santa Cruz, Bolivia, con enfoque en diseño, técnica y coordinación.'],
+  '/': ['Menvic Arquitectura | Diseño, proyectos y construcción', defaultDescription],
+  '/proyectos': ['Proyectos de arquitectura y construcción | Menvic Arquitectura', 'Proyectos de arquitectura, construcción y reformas de Menvic Arquitectura en Santa Cruz, Bolivia.'],
   '/estudio': ['Estudio de Arquitectura | Menvic Arquitectura', 'Conozca Menvic Arquitectura: estudio de arquitectura en Santa Cruz, Bolivia, enfocado en diseño, documentación técnica y gestión de proyectos.'],
-  '/servicios': ['Servicios de Arquitectura | Menvic Arquitectura', 'Servicios de Menvic Arquitectura: diseño arquitectónico, anteproyectos, documentación técnica, gestión, coordinación y apoyo constructivo.'],
-  '/contacto': ['Contacto | Menvic Arquitectura', 'Contacto de Menvic Arquitectura en Santa Cruz, Bolivia. Teléfono y WhatsApp: 75019441.'],
+  '/servicios': ['Servicios de arquitectura y construcción | Menvic Arquitectura', 'Diseño arquitectónico, proyectos técnicos, reformas, coordinación de obra y gestión de proyectos en Santa Cruz, Bolivia.'],
+  '/contacto': ['Consultar proyecto | Menvic Arquitectura', 'Contacto de Menvic Arquitectura en Santa Cruz, Bolivia para arquitectura, construcción, reformas y documentación técnica.'],
   '/aviso-legal': ['Aviso Legal | Menvic Arquitectura', 'Aviso legal de Menvic Arquitectura con información del titular, condiciones de uso y datos de contacto.'],
   '/politica-privacidad': ['Política de Privacidad | Menvic Arquitectura', 'Política de privacidad de Menvic Arquitectura: tratamiento de datos, finalidad, conservación y derechos del usuario.'],
   '/politica-cookies': ['Política de Cookies | Menvic Arquitectura', 'Información sobre el uso de cookies en menvic.com, finalidades y gestión de preferencias del usuario.'],
