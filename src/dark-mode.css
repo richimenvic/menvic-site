@@ -1,0 +1,203 @@
+/* Dark mode overrides for Menvic Arquitectura.
+   Imported last so it can correct fixed light colors from the base styles. */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0e0e0c;
+    --paper: #151410;
+    --ink: #f4efe6;
+    --muted: #b8afa2;
+    --soft: #24211c;
+    --line: rgba(244, 239, 230, .16);
+    --accent: #c5a982;
+  }
+
+  html,
+  body,
+  #root {
+    background: var(--bg) !important;
+    color: var(--ink) !important;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: rgba(14, 14, 12, .92) !important;
+    border-bottom-color: var(--line) !important;
+  }
+
+  .brand-logo img {
+    filter: invert(1) brightness(1.08) contrast(.98);
+  }
+
+  .hero,
+  .page-hero,
+  .section,
+  .section-editorial,
+  .section-featured,
+  footer,
+  .box,
+  .card,
+  .home-project-card,
+  .project-card,
+  .featured-project,
+  .portfolio-item,
+  .portfolio-note,
+  .home-cta-section,
+  .project-pagination,
+  .detail,
+  .project-facts div,
+  .portfolio-meta li {
+    border-color: var(--line) !important;
+  }
+
+  .lead,
+  .section-copy,
+  .box p,
+  .box ul,
+  .box ol,
+  .box li,
+  .card p,
+  .featured-project-content p,
+  .project-card-content p,
+  .project-card-meta,
+  .portfolio-content p,
+  .portfolio-meta strong,
+  .portfolio-location,
+  .portrait-caption,
+  .footer-contact,
+  footer,
+  .legal-note,
+  .home-project-content p,
+  .contact-form label,
+  .contact-form label span,
+  .detail,
+  .detail strong,
+  .drawing::after {
+    color: var(--muted) !important;
+  }
+
+  .kicker,
+  .home-kicker,
+  .project-number,
+  .project-order,
+  .text-link,
+  .detail strong {
+    color: var(--accent) !important;
+  }
+
+  .nav-links,
+  .brand span {
+    color: var(--muted) !important;
+  }
+
+  .nav-links a::after {
+    background: var(--ink) !important;
+  }
+
+  .text-link:hover,
+  .legal a:hover,
+  .project-card-meta strong {
+    color: var(--ink) !important;
+  }
+
+  .cta-link,
+  .contact-form button {
+    border-color: var(--ink) !important;
+    color: var(--ink) !important;
+    background: transparent !important;
+  }
+
+  .cta-link--ghost {
+    border-color: var(--line) !important;
+  }
+
+  .cta-link:hover,
+  .contact-form button:hover,
+  .contact-form button:focus-visible {
+    background: var(--ink) !important;
+    color: var(--bg) !important;
+  }
+
+  .hero-image,
+  .image-placeholder,
+  .featured-project-media,
+  .project-img,
+  .project-card-image,
+  .home-project-image,
+  .portfolio-media,
+  .drawing,
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    border-color: var(--line) !important;
+    background-color: var(--soft) !important;
+    color: var(--ink) !important;
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    background: rgba(255, 255, 255, .025) !important;
+  }
+
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder {
+    color: rgba(184, 175, 162, .72) !important;
+  }
+
+  .contact-form input:hover,
+  .contact-form select:hover,
+  .contact-form textarea:hover,
+  .contact-form input:focus-visible,
+  .contact-form select:focus-visible,
+  .contact-form textarea:focus-visible {
+    border-color: rgba(244, 239, 230, .42) !important;
+  }
+
+  .hero-image-photo,
+  .featured-project-media,
+  .project-img,
+  .portrait-placeholder,
+  .portfolio-media--avicola,
+  .portfolio-media--prodimsa,
+  .media-avicola,
+  .media-prodimsa,
+  .drawing {
+    background-image: linear-gradient(145deg, rgba(255,255,255,.06), rgba(197,169,130,.10)) !important;
+  }
+
+  .media-temple,
+  .portfolio-media--temple {
+    background-image: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.46)), url('/img/imagen1.jpg') !important;
+  }
+
+  .hero-image::before,
+  .image-placeholder::before,
+  .featured-project-media::before,
+  .project-img::after,
+  .home-project-image::before,
+  .portfolio-media::before {
+    border-color: rgba(244, 239, 230, .24) !important;
+  }
+
+  img.media-img,
+  .project-detail-media-img,
+  .project-gallery-img,
+  .featured-project-media-img,
+  .home-project-media-img,
+  .portfolio-media .media-img {
+    filter: brightness(.86) contrast(1.04) saturate(.9);
+  }
+
+  .form-status.success {
+    color: #9fc9aa !important;
+  }
+
+  .form-status.error {
+    color: #e0a0a0 !important;
+  }
+}
