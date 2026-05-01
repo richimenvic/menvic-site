@@ -1020,3 +1020,24 @@ footer{padding:52px 0 68px;border-top:1px solid var(--line);color:var(--muted);f
     gap:20px;
   }
 }
+
+.home-project-image{position:relative;display:block}
+.home-project-badge{position:absolute;top:14px;right:14px;background:rgba(27,26,24,.84);color:#fff;padding:6px 10px;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;z-index:2}
+.home-project-title-link{text-decoration:none}
+.home-project-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.home-project-link:hover,.home-project-title-link:hover{text-decoration:underline}
+.home-services-grid--six{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.contact-guidance-box h2{font-size:clamp(1.15rem,2vw,1.5rem);margin-bottom:10px}
+.contact-guidance-box p{margin:0}
+
+@media(max-width:900px){
+  .home-services-grid--six{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:640px){
+  .home-hero-title{font-size:clamp(2rem,9.8vw,2.7rem);line-height:1.08;margin-bottom:22px}
+  .lead{line-height:1.65}
+  .home-project-badge{top:10px;right:10px;padding:5px 8px;font-size:.62rem}
+  .home-project-link{font-size:.68rem}
+  .home-services-grid--six{grid-template-columns:1fr;gap:8px}
+}
