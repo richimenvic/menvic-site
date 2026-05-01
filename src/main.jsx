@@ -5,6 +5,7 @@ import App from './App'
 import './styles.css'
 import './mobile-fixes.css'
 import './dark-mode.css'
+import './photo-badge.css'
 
 window.__MENDIETA_APP_BOOTED = true
 
