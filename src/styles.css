@@ -1155,37 +1155,3 @@ footer{padding:52px 0 68px;border-top:1px solid var(--line);color:var(--muted);f
     height:62px;
   }
 }
-
-.project-card-image{
-  position:relative;
-}
-
-.project-card-badge{
-  position:absolute;
-  top:14px;
-  right:14px;
-  background:rgba(27,26,24,.84);
-  color:#fff;
-  padding:6px 10px;
-  font-size:.66rem;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  z-index:2;
-}
-
-@media(max-width:640px){
-  .project-card-badge{
-    top:10px;
-    right:10px;
-    padding:5px 8px;
-    font-size:.62rem;
-  }
-}
-
-.project-card-more{
-  margin:22px 0 0;
-  color:var(--muted);
-  font-size:.66rem;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}

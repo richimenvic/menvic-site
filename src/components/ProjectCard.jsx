@@ -57,7 +57,6 @@ export default function ProjectCard({ project }) {
           {project.projectFor && <div><dt>Proyecto para</dt><dd>{project.projectFor}</dd></div>}
           <div><dt>Rol</dt><dd>{project.role}</dd></div>
         </dl>
-        {totalImages > 1 ? <p className="project-card-more">+ fotos</p> : null}
         <Link className="text-link" to={`/proyectos/${project.slug}`}>Ver proyecto completo</Link>
       </div>
     </article>
