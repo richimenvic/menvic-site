@@ -1,5 +1,5 @@
 export const siteUrl = 'https://menvic.com'
-export const defaultImage = `${siteUrl}/img/projects/prodimsa-lateral/hero.webp`
+export const defaultImage = `${siteUrl}/img/projects/prodimsa/hero.webp`
 
 export function updateSeo({ title, description, canonical, image = defaultImage }) {
   document.title = title
