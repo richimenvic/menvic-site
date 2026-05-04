@@ -5,11 +5,11 @@ const orderedProjectSlugs = [
   'templo-la-paz',
   'templo-santa-cruz',
   'centro-social-corporativo-prodimsa',
-  'experiencia-avicola-sofia-2012-2014',
-  'experiencia-avicola-sofia-2015',
-  'experiencia-frigorifico-sofia-cochabamba',
-  'experiencia-avicola-sofia-fabrica-5',
-  'experiencia-iglesias-ijsud',
+  'iglesias-ijsud-producto-diseno',
+  'avicola-sofia-planta-alimentos-5',
+  'avicola-sofia-cocina-comedor-malla-las-pavas',
+  'avicola-sofia-matadero-pollos',
+  'avicola-sofia-frigorifico-cochabamba',
 ]
 
 const uniqueProjectsBySlug = projects.filter(
