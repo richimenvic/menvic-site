@@ -16,10 +16,10 @@ export const projects = [
     description:
       'Proyecto institucional de alta complejidad geométrica y coordinación multidisciplinar. Se trabajó con documentación integral y coordinación temprana para asegurar consistencia técnica en obra.',
     legalNote: templeDisclaimer,
-    cardImage: '/img/projects/lapaz/card.webp',
-    heroImage: '/img/projects/lapaz/hero.webp',
-    detailImage: '/img/projects/lapaz/detail.webp',
-    galleryImages: ['/img/projects/lapaz/detail.webp'],
+    cardImage: '/img/projects/templo-la-paz/card.webp',
+    heroImage: '/img/projects/templo-la-paz/hero.webp',
+    detailImage: '/img/projects/templo-la-paz/detail.webp',
+    galleryImages: ['/img/projects/templo-la-paz/detail.webp'],
   },
   {
     slug: 'templo-santa-cruz',
@@ -35,10 +35,10 @@ export const projects = [
     description:
       'Proyecto institucional desarrollado para Santa Cruz, con enfoque en precisión documental, sobriedad formal y coordinación multidisciplinar orientada a su entrega final.',
     legalNote: templeDisclaimer,
-    cardImage: '/img/projects/santacruz/card.webp',
-    heroImage: '/img/projects/santacruz/hero.webp',
-    detailImage: '/img/projects/santacruz/detail.webp',
-    galleryImages: ['/img/projects/santacruz/detail.webp'],
+    cardImage: '/img/projects/templo-santa-cruz/card.webp',
+    heroImage: '/img/projects/templo-santa-cruz/hero.webp',
+    detailImage: '/img/projects/templo-santa-cruz/detail.webp',
+    galleryImages: ['/img/projects/templo-santa-cruz/detail.webp'],
   },
   {
     slug: 'centro-social-corporativo-prodimsa',
@@ -75,10 +75,10 @@ export const projects = [
     description:
       'Elaboración de planos de construcción para la Iglesia de Jesucristo de los Santos de los Últimos Días, empleando herramientas como AutoCAD y Revit en distintas ubicaciones de Bolivia.',
     // TODO: replace placeholder images for iglesias-ijsud
-    cardImage: '/img/projects/prodimsa-lateral/card.webp',
-    heroImage: '/img/projects/prodimsa-lateral/hero.webp',
-    detailImage: '/img/projects/prodimsa-lateral/detail.webp',
-    galleryImages: ['/img/projects/prodimsa-lateral/detail.webp'],
+    cardImage: '/img/projects/iglesias-ijsud/card.webp',
+    heroImage: '/img/projects/iglesias-ijsud/hero.webp',
+    detailImage: '/img/projects/iglesias-ijsud/detail.webp',
+    galleryImages: ['/img/projects/iglesias-ijsud/detail.webp'],
   },
   {
     slug: 'avicola-sofia-planta-alimentos-5',
@@ -92,10 +92,10 @@ export const projects = [
     description:
       'Proyecto ejecutado para Avícola Sofía Ltda. con construcción de estructuras complementarias para operación industrial y soporte técnico.',
     // TODO: replace placeholder images for sofia-alimentos-5
-    cardImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    heroImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    detailImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    galleryImages: ['/img/projects/prodimsa/gallery-06-structure.webp'],
+    cardImage: '/img/projects/sofia-alimentos-5/card.webp',
+    heroImage: '/img/projects/sofia-alimentos-5/hero.webp',
+    detailImage: '/img/projects/sofia-alimentos-5/detail.webp',
+    galleryImages: ['/img/projects/sofia-alimentos-5/gallery-01.webp'],
     legalNote: 'Imagen de obra ejecutada por MENVIC.',
   },
   {
@@ -110,10 +110,10 @@ export const projects = [
     description:
       'Construcción de una cocina-comedor en el proyecto Malla Las Pavas para mejorar servicios de alimentación y bienestar del personal.',
     // TODO: replace placeholder images for sofia-cocina-comedor-malla-las-pavas
-    cardImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    heroImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    detailImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    galleryImages: ['/img/projects/prodimsa/gallery-06-structure.webp'],
+    cardImage: '/img/projects/sofia-cocina-comedor-malla-las-pavas/card.webp',
+    heroImage: '/img/projects/sofia-cocina-comedor-malla-las-pavas/hero.webp',
+    detailImage: '/img/projects/sofia-cocina-comedor-malla-las-pavas/detail.webp',
+    galleryImages: ['/img/projects/sofia-cocina-comedor-malla-las-pavas/gallery-01.webp'],
     legalNote: 'Imagen de obra ejecutada por MENVIC.',
   },
   {
@@ -128,10 +128,10 @@ export const projects = [
     description:
       'Construcción de bloques complementarios vinculados a la operación avícola, incluyendo áreas administrativas, vestidores y soporte logístico.',
     // TODO: replace placeholder images for sofia-matadero-pollos
-    cardImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    heroImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    detailImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    galleryImages: ['/img/projects/prodimsa/gallery-06-structure.webp'],
+    cardImage: '/img/projects/sofia-matadero-pollos/card.webp',
+    heroImage: '/img/projects/sofia-matadero-pollos/hero.webp',
+    detailImage: '/img/projects/sofia-matadero-pollos/detail.webp',
+    galleryImages: ['/img/projects/sofia-matadero-pollos/gallery-01.webp'],
     legalNote: 'Imagen de obra ejecutada por MENVIC.',
   },
   {
@@ -146,10 +146,10 @@ export const projects = [
     description:
       'Construcción de infraestructura frigorífica para ampliar la capacidad de procesamiento y almacenamiento en Cochabamba.',
     // TODO: replace placeholder images for sofia-frigorifico-cochabamba
-    cardImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    heroImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    detailImage: '/img/projects/prodimsa/gallery-06-structure.webp',
-    galleryImages: ['/img/projects/prodimsa/gallery-06-structure.webp'],
+    cardImage: '/img/projects/sofia-frigorifico-cochabamba/card.webp',
+    heroImage: '/img/projects/sofia-frigorifico-cochabamba/hero.webp',
+    detailImage: '/img/projects/sofia-frigorifico-cochabamba/detail.webp',
+    galleryImages: ['/img/projects/sofia-frigorifico-cochabamba/gallery-01.webp'],
     legalNote: 'Imagen de obra ejecutada por MENVIC.',
   },
 ]
