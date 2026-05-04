@@ -18,7 +18,7 @@ export default function Home() {
             </div>
           </div>
           <figure className="hero-image hero-image-photo">
-            <img className="media-img" src="/img/projects/prodimsa-lateral-hero.webp" alt="Vista exterior de proyecto desarrollado por Menvic Arquitectura" loading="eager" />
+            <img className="media-img" src="/img/projects/prodimsa-lateral/hero.webp" alt="Vista exterior de proyecto desarrollado por Menvic Arquitectura" loading="eager" />
           </figure>
         </div>
       </section>
