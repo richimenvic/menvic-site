@@ -5,7 +5,7 @@ set -euo pipefail
 test -f dist/index.html
 test -f dist/CNAME
 test -d dist/assets
-grep -qx "mendietastudio.com" dist/CNAME
+grep -qx "menvic.com" dist/CNAME
 grep -Eq 'src="(\./|/)assets/.+\.js"' dist/index.html
 grep -Eq 'href="(\./|/)assets/.+\.css"' dist/index.html
 
