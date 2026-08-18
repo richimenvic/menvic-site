@@ -592,3 +592,53 @@
     min-height: 48px;
   }
 }
+
+/* ACCESSIBILITY-DETAIL-CONTRAST-START */
+
+/* Medium contrast for review details */
+.access-criterion-panel p {
+  color: #43536a;
+}
+
+.access-note-label > span,
+.access-evidence-heading strong {
+  color: #304158;
+}
+
+.access-detail-row-v2 textarea {
+  color: #314258;
+}
+
+.access-detail-row-v2 textarea::placeholder {
+  color: #68788d;
+  opacity: 1;
+}
+
+.access-note-actions small,
+.access-evidence-heading small {
+  color: #596b81;
+  font-weight: 600;
+}
+
+.access-evidence-empty {
+  color: #607188;
+  font-weight: 600;
+}
+
+.access-note-actions button:disabled {
+  opacity: 1;
+  color: #77869a;
+  border-color: #d2d9e2;
+  background: #f8fafb;
+}
+
+/* ACCESSIBILITY-DETAIL-CONTRAST-END */
+
+/* ACCESSIBILITY-NOTE-HELP-SIZE-START */
+
+.access-note-actions small {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ACCESSIBILITY-NOTE-HELP-SIZE-END */
