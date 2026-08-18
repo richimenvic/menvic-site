@@ -12,7 +12,7 @@ import LegalNotice from './pages/LegalNotice'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import CookiesPolicy from './pages/CookiesPolicy'
 import InternalToolsHome from './pages/InternalToolsHome'
-import AccessibilityChecklist from './pages/AccessibilityChecklist'
+import AccessibilityChecklistV2 from './pages/AccessibilityChecklistV2'
 import { siteUrl, updateSeo } from './seo'
 
 const defaultDescription = 'Menvic Arquitectura desarrolla proyectos de arquitectura, documentación técnica, coordinación y construcción en Santa Cruz, Bolivia.'
@@ -81,7 +81,7 @@ export default function App() {
         <Route path="/politica-cookies" element={<CookiesPolicy />} />
         <Route path="/politica-cookies.html" element={<Navigate to="/politica-cookies" replace />} />
         <Route path="/tools" element={<InternalToolsHome />} />
-        <Route path="/tools/accesibilidad" element={<AccessibilityChecklist />} />
+        <Route path="/tools/accesibilidad" element={<AccessibilityChecklistV2 />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!isInternalTool && <Footer />}
