@@ -20,6 +20,7 @@ export default function AccessibilityReviewDetail({
   initialNote,
   pin,
   actor,
+  onDraftNote,
   onSaveNote,
 }) {
   const [draftNote, setDraftNote] = useState(initialNote || '')
@@ -116,7 +117,9 @@ export default function AccessibilityReviewDetail({
             value={draftNote}
             placeholder="Ej.: Pasillo existente 1.12 m; corregir muro W-23. También puedes pegar una captura con Ctrl+V."
             onChange={(event) => {
-              setDraftNote(event.target.value)
+              const nextNote = event.target.value
+              setDraftNote(nextNote)
+              onDraftNote?.(nextNote)
               setDirty(true)
               setNoteState('')
             }}
