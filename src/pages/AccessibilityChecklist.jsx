@@ -182,6 +182,14 @@ function LockIcon() {
   )
 }
 
+function SidebarToggleIcon({ collapsed }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d={collapsed ? 'm9 6 6 6-6 6' : 'm15 6-6 6 6 6'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 async function rpc(name, payload) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
     method: 'POST',
@@ -279,6 +287,7 @@ export default function AccessibilityChecklist() {
   const [savingId, setSavingId] = useState('')
   const [error, setError] = useState('')
   const [syncMessage, setSyncMessage] = useState('')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 1180px)').matches)
 
   const hydrateState = useCallback((rows) => {
     const next = Object.fromEntries(allItems.map((item) => [item.id, defaultCheckState(item.id)]))
@@ -349,6 +358,15 @@ export default function AccessibilityChecklist() {
     return () => window.clearInterval(timer)
   }, [actor, pin, loadState])
 
+  useEffect(() => {
+    const narrowViewport = window.matchMedia('(max-width: 1180px)')
+    const onViewportChange = (event) => {
+      if (event.matches) setSidebarCollapsed(true)
+    }
+    narrowViewport.addEventListener?.('change', onViewportChange)
+    return () => narrowViewport.removeEventListener?.('change', onViewportChange)
+  }, [])
+
   const updateCheck = async (id, patch) => {
     const current = checkState[id] || defaultCheckState(id)
     const next = { ...current, ...patch }
@@ -407,8 +425,17 @@ export default function AccessibilityChecklist() {
   if (!actor || !pin) return <LoginPanel onLogin={login} busy={busy} error={error} />
 
   return (
-    <main className="access-tool-page">
+    <main className={`access-tool-page ${sidebarCollapsed ? 'is-sidebar-collapsed' : ''}`}>
       <aside className="access-sidebar">
+        <button
+          type="button"
+          className="access-sidebar-toggle"
+          onClick={() => setSidebarCollapsed((current) => !current)}
+          aria-label={sidebarCollapsed ? 'Mostrar panel lateral' : 'Ocultar panel lateral'}
+          aria-expanded={!sidebarCollapsed}
+        >
+          <SidebarToggleIcon collapsed={sidebarCollapsed} />
+        </button>
         <img src="/img/brand/menvic-logo.png" alt="Menvic Arquitectura" className="access-brand" />
         <div className="access-sidebar-title"><CheckIcon checked /> <span>Revisión de<br />Accesibilidad</span></div>
         <div className="access-sidebar-session">
