@@ -143,6 +143,7 @@ export default function AccessibilityChecklistV2() {
   const [error, setError] = useState('')
   const [syncMessage, setSyncMessage] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 1180px)').matches)
+  const [largeView, setLargeView] = useState(() => localStorage.getItem('menvic-accessibility-large-view') === '1')
 
   const hydrateState = useCallback((rows) => {
     const next = Object.fromEntries(allItems.map((item) => [item.id, defaultCheckState(item.id)]))
@@ -258,6 +259,14 @@ export default function AccessibilityChecklistV2() {
     setError('')
   }
 
+  const toggleLargeView = () => {
+    setLargeView((current) => {
+      const next = !current
+      localStorage.setItem('menvic-accessibility-large-view', next ? '1' : '0')
+      return next
+    })
+  }
+
   const reviewedCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.status !== 'pending').length, [checkState])
   const doneCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.status === 'done').length, [checkState])
   const pendingCount = allItems.length - reviewedCount
@@ -295,7 +304,7 @@ export default function AccessibilityChecklistV2() {
   if (!actor || !pin) return <LoginPanel onLogin={login} busy={busy} error={error} />
 
   return (
-    <main className={`access-tool-page ${sidebarCollapsed ? 'is-sidebar-collapsed' : ''}`}>
+    <main className={`access-tool-page ${sidebarCollapsed ? 'is-sidebar-collapsed' : ''} ${largeView ? 'is-large-view' : ''}`}>
       <aside className="access-sidebar">
         <button
           type="button"
@@ -321,7 +330,18 @@ export default function AccessibilityChecklistV2() {
             <h1>Revisión de Accesibilidad</h1>
             <p>Ley Autónoma Nº 80-14 · Anexo VII · Barreras Arquitectónicas</p>
           </div>
-          <div className="access-sync-state"><span className="access-sync-dot" /> {savingId ? 'Guardando…' : (syncMessage || 'Conectado')}</div>
+          <div className="access-topbar-actions">
+            <button
+              type="button"
+              className={`access-view-toggle ${largeView ? 'is-active' : ''}`}
+              onClick={toggleLargeView}
+              aria-pressed={largeView}
+              title="Aumentar tamaño de texto y controles"
+            >
+              {largeView ? 'A− Vista normal' : 'A+ Vista grande'}
+            </button>
+            <div className="access-sync-state"><span className="access-sync-dot" /> {savingId ? 'Guardando…' : (syncMessage || 'Conectado')}</div>
+          </div>
         </header>
 
         <div className="access-summary-grid">

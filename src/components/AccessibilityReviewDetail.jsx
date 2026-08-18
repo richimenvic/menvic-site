@@ -29,7 +29,11 @@ export default function AccessibilityReviewDetail({
   const [images, setImages] = useState([])
   const [imageBusy, setImageBusy] = useState(false)
   const [imageError, setImageError] = useState('')
+  const [viewerImage, setViewerImage] = useState(null)
+  const [zoom, setZoom] = useState(1)
   const fileInputRef = useRef(null)
+  const viewerScrollRef = useRef(null)
+  const dragRef = useRef(null)
 
   useEffect(() => {
     if (!dirty) setDraftNote(initialNote || '')
@@ -47,6 +51,22 @@ export default function AccessibilityReviewDetail({
   useEffect(() => {
     loadImages()
   }, [loadImages])
+
+  useEffect(() => {
+    if (!viewerImage) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setViewerImage(null)
+      if (event.key === '+' || event.key === '=') setZoom((value) => Math.min(3, value + 0.25))
+      if (event.key === '-') setZoom((value) => Math.max(0.5, value - 0.25))
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [viewerImage])
 
   const saveNote = useCallback(async () => {
     if (!dirty) return
@@ -95,6 +115,37 @@ export default function AccessibilityReviewDetail({
       setImageBusy(false)
     }
   }, [actor, pin])
+
+  const openViewer = useCallback((image) => {
+    setViewerImage(image)
+    setZoom(1)
+    dragRef.current = null
+  }, [])
+
+  const startPan = useCallback((event) => {
+    const viewer = viewerScrollRef.current
+    if (!viewer || zoom <= 1) return
+    dragRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      left: viewer.scrollLeft,
+      top: viewer.scrollTop,
+    }
+    viewer.setPointerCapture?.(event.pointerId)
+  }, [zoom])
+
+  const movePan = useCallback((event) => {
+    const viewer = viewerScrollRef.current
+    const drag = dragRef.current
+    if (!viewer || !drag) return
+    viewer.scrollLeft = drag.left - (event.clientX - drag.x)
+    viewer.scrollTop = drag.top - (event.clientY - drag.y)
+  }, [])
+
+  const endPan = useCallback((event) => {
+    dragRef.current = null
+    viewerScrollRef.current?.releasePointerCapture?.(event.pointerId)
+  }, [])
 
   return (
     <div className="access-detail-row access-detail-row-v2">
@@ -169,9 +220,10 @@ export default function AccessibilityReviewDetail({
             <div className="access-evidence-grid">
               {images.map((image) => (
                 <figure key={image.evidence_id} className="access-evidence-card">
-                  <a href={image.url} target="_blank" rel="noreferrer" title="Abrir imagen">
+                  <button type="button" className="access-evidence-image-button" onClick={() => openViewer(image)} title="Ampliar imagen">
                     <img src={image.url} alt={image.original_name || 'Captura de revisión'} loading="lazy" />
-                  </a>
+                    <span>Ampliar</span>
+                  </button>
                   <figcaption>
                     <span>{image.width}×{image.height} · {formatBytes(image.bytes)}</span>
                     <button type="button" onClick={() => removeImage(image.evidence_id)} disabled={imageBusy} aria-label="Eliminar imagen">Eliminar</button>
@@ -182,6 +234,37 @@ export default function AccessibilityReviewDetail({
           )}
         </div>
       </div>
+
+      {viewerImage && (
+        <div className="access-image-viewer" role="dialog" aria-modal="true" aria-label="Vista ampliada de evidencia">
+          <div className="access-image-viewer-bar">
+            <strong>{viewerImage.original_name || 'Captura de revisión'}</strong>
+            <div className="access-image-viewer-controls">
+              <button type="button" onClick={() => setZoom((value) => Math.max(0.5, value - 0.25))} aria-label="Alejar">−</button>
+              <button type="button" onClick={() => setZoom(1)}>{Math.round(zoom * 100)}%</button>
+              <button type="button" onClick={() => setZoom((value) => Math.min(3, value + 0.25))} aria-label="Acercar">+</button>
+              <button type="button" onClick={() => document.querySelector('.access-image-viewer')?.requestFullscreen?.()}>Pantalla completa</button>
+              <button type="button" className="is-close" onClick={() => setViewerImage(null)}>Cerrar</button>
+            </div>
+          </div>
+          <div
+            ref={viewerScrollRef}
+            className={`access-image-viewer-scroll ${zoom > 1 ? 'is-zoomed' : ''}`}
+            onPointerDown={startPan}
+            onPointerMove={movePan}
+            onPointerUp={endPan}
+            onPointerCancel={endPan}
+          >
+            <img
+              src={viewerImage.url}
+              alt={viewerImage.original_name || 'Captura de revisión ampliada'}
+              draggable="false"
+              style={{ width: `${zoom * 100}%` }}
+            />
+          </div>
+          <small className="access-image-viewer-help">Usa + / − para ampliar. Cuando esté ampliada, arrastra la imagen para moverte. Esc cierra la vista.</small>
+        </div>
+      )}
     </div>
   )
 }
