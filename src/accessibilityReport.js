@@ -22,36 +22,217 @@ export async function printAccessibilityReport(options) {
   if (!reportWindow || reportWindow.closed) return
 
   const document = reportWindow.document
+  const page = document.querySelector('.page')
+
+  if (!page) return
+
   const style = document.createElement('style')
+
   style.textContent = `
-    .report-menvic-footer { display: none; }
-    @page { size: A4; margin: 0 !important; }
+    .report-print-layout {
+      width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .report-print-layout > thead,
+    .report-print-layout > tfoot {
+      display: none;
+    }
+
+    .report-print-layout td {
+      padding: 0;
+      border: 0;
+    }
+
+    .report-menvic-header,
+    .report-menvic-footer {
+      display: none;
+    }
+
+    @page {
+      size: A4;
+      margin: 0 !important;
+    }
+
     @media print {
-      html, body { margin: 0 !important; padding: 0 !important; }
-      .page { max-width: none !important; padding: 12mm 12mm 18mm !important; }
+      html,
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .report-print-layout {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        table-layout: fixed;
+      }
+
+      .report-print-layout > thead {
+        display: table-header-group !important;
+      }
+
+      .report-print-layout > tbody {
+        display: table-row-group !important;
+      }
+
+      .report-print-layout > tfoot {
+        display: table-footer-group !important;
+      }
+
+      .report-print-layout tr,
+      .report-print-layout td {
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 0 !important;
+      }
+
+      /*
+       * Header real de cada pagina.
+       * Al formar parte de THEAD reserva espacio en todas las paginas.
+       */
+      .report-menvic-header {
+        display: flex !important;
+        height: 20mm;
+        margin: 0 12mm;
+        padding: 5mm 0 2.5mm;
+        box-sizing: border-box;
+
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8mm;
+
+        border-bottom: 0.45mm solid #167a4f;
+        background: #fff;
+        color: #172033;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .report-menvic-header-text {
+        min-width: 0;
+      }
+
+      .report-menvic-header-title {
+        display: block;
+        font-size: 12pt;
+        line-height: 1.15;
+        font-weight: 800;
+      }
+
+      .report-menvic-header-project {
+        display: block;
+        margin-top: 1mm;
+        font-size: 7.5pt;
+        line-height: 1.2;
+        color: #536174;
+        font-weight: 600;
+      }
+
+      .report-menvic-header img {
+        width: 22mm !important;
+        height: auto !important;
+        flex: 0 0 auto;
+        margin: 0 !important;
+      }
+
+      /*
+       * Footer repetido. TFOOT tambien reserva su espacio.
+       */
       .report-menvic-footer {
         display: flex !important;
-        position: fixed;
-        left: 12mm;
-        right: 12mm;
-        bottom: 5mm;
-        align-items: center;
+        height: 12mm;
+        margin: 0 12mm;
+        padding: 2.5mm 0 4mm;
+        box-sizing: border-box;
+
+        align-items: flex-end;
         justify-content: space-between;
         gap: 10mm;
-        margin: 0 !important;
-        padding: 2.5mm 0 0 !important;
-        border-top: 0.3mm solid #b8c1cc !important;
+
+        border-top: 0.3mm solid #b8c1cc;
         background: #fff;
-        color: #536174 !important;
-        font: 700 8pt/1.2 Arial, Helvetica, sans-serif !important;
+        color: #536174;
+        font: 700 8pt/1.2 Arial, Helvetica, sans-serif;
       }
-      .report-menvic-footer span:last-child { text-align: right; }
+
+      .report-menvic-footer span:last-child {
+        text-align: right;
+      }
+
+      /*
+       * El header original del reporte solo aparece en pantalla.
+       * En papel lo sustituye el THEAD repetido.
+       */
+      .page > header {
+        display: none !important;
+      }
+
+      .page {
+        max-width: none !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 12mm !important;
+      }
+
+      .actions {
+        display: none !important;
+      }
     }
   `
+
   document.head.appendChild(style)
+
+  const table = document.createElement('table')
+  table.className = 'report-print-layout'
+
+  const thead = document.createElement('thead')
+  const headRow = document.createElement('tr')
+  const headCell = document.createElement('td')
+
+  const runningHeader = document.createElement('div')
+  runningHeader.className = 'report-menvic-header'
+  runningHeader.innerHTML = `
+    <div class="report-menvic-header-text">
+      <span class="report-menvic-header-title">Revisión de Accesibilidad</span>
+      <span class="report-menvic-header-project">${escText(options.projectName)}</span>
+    </div>
+    <img
+      src="${window.location.origin}/img/brand/menvic-logo.png"
+      alt="MENVIC Arquitectura"
+    >
+  `
+
+  headCell.appendChild(runningHeader)
+  headRow.appendChild(headCell)
+  thead.appendChild(headRow)
+
+  const tbody = document.createElement('tbody')
+  const bodyRow = document.createElement('tr')
+  const bodyCell = document.createElement('td')
+
+  page.parentNode.insertBefore(table, page)
+
+  bodyCell.appendChild(page)
+  bodyRow.appendChild(bodyCell)
+  tbody.appendChild(bodyRow)
+
+  const tfoot = document.createElement('tfoot')
+  const footRow = document.createElement('tr')
+  const footCell = document.createElement('td')
 
   const footer = document.createElement('div')
   footer.className = 'report-menvic-footer'
-  footer.innerHTML = `<span>MENVIC Arquitectura · ${escText(options.projectName)}</span><span>Revisión de Accesibilidad</span>`
-  document.body.appendChild(footer)
+  footer.innerHTML = `
+    <span>MENVIC Arquitectura · ${escText(options.projectName)}</span>
+    <span>Revisión de Accesibilidad</span>
+  `
+
+  footCell.appendChild(footer)
+  footRow.appendChild(footCell)
+  tfoot.appendChild(footRow)
+
+  table.appendChild(thead)
+  table.appendChild(tbody)
+  table.appendChild(tfoot)
 }

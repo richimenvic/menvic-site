@@ -196,6 +196,59 @@ export async function printAccessibilityReport({ projectName, actor, sections, c
   header{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;border-bottom:3px solid #167a4f;padding-bottom:14px;margin-bottom:14px} header img{width:145px} h1{font-size:25px;margin:0 0 3px} header p{margin:0;color:#536174}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0 20px}.summary div{border:1px solid #d8dee6;border-radius:8px;padding:9px;background:#f8fafb}.summary b{display:block;font-size:15px;color:#167a4f}.section{margin:0 0 18px}.section>h2{font-size:15px;text-transform:uppercase;border-bottom:1px solid #b8c1cc;padding:8px 0;margin:0 0 8px}.section>h2 span{font-weight:500;color:#536174}.item{border:1px solid #d9dfe6;border-left:5px solid #c6ccd4;border-radius:8px;padding:10px 12px;margin:0 0 9px;break-inside:avoid}.item.done{border-left-color:#1c925f;background:#f5fbf7}.item.na{border-left-color:#8993a0;background:#fafafa}.item-head{display:flex;justify-content:space-between;gap:18px;align-items:start}.item h3{font-size:12px;margin:0 0 2px}.item h4{font-size:11px;font-weight:600;color:#536174;margin:0}.status{min-width:74px;text-align:center;border-radius:6px;padding:5px 7px;background:#fff5df;color:#955900;font-weight:800}.status.done{background:#e7f6ed;color:#086b43}.status.na{background:#edf0f3;color:#596273}.status small{display:block;font-size:8px;font-weight:700}.criteria-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}.criteria-grid b,.note b{font-size:9px;text-transform:uppercase;color:#536174}.criteria-grid p,.note p{margin:3px 0 0}.source{display:inline-block;margin-top:7px;border:1px solid #68ab83;background:#dff5e7;color:#123b2c;border-radius:5px;padding:4px 6px;font-weight:700}.meta{display:flex;justify-content:space-between;gap:10px;margin-top:7px;padding-top:6px;border-top:1px dashed #d9dfe6;color:#536174}.note{margin-top:7px;background:#fff8e9;border:1px solid #ead49f;border-radius:6px;padding:7px}.evidence{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.evidence figure{margin:0;border:1px solid #d8dee6;border-radius:5px;overflow:hidden;background:#fff}.evidence img{width:100%;max-height:220px;object-fit:contain;display:block}.evidence figcaption{padding:4px 6px;color:#667085;font-size:8px}
   footer{margin-top:20px;border-top:1px solid #ccc;padding-top:8px;color:#667085;font-size:9px}
   @page{size:A4;margin:12mm} @media print{body{font-size:9.5px}.actions{display:none}.page{max-width:none;padding:0}.item{break-inside:avoid}.section{break-before:auto}.evidence img{max-height:150px}}
+  /* REPORT-PRINT-POLISH-START */
+
+  /* Smaller logo for print report */
+  header img {
+    width: 87px !important;
+  }
+
+  /* Keep report cards and inner blocks more stable across page breaks */
+  .item {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .item-head,
+  .criteria-grid,
+  .meta,
+  .note,
+  .evidence,
+  .source {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+  }
+
+  @media print {
+    header img {
+      width: 87px !important;
+    }
+
+    .item {
+      break-inside: avoid-page !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .item-head,
+    .criteria-grid,
+    .meta,
+    .note,
+    .evidence,
+    .source {
+      break-inside: avoid-page !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
+    }
+  }
+
+  /* REPORT-PRINT-POLISH-END */
 </style>
 </head>
 <body>
