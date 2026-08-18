@@ -11,6 +11,7 @@ import Contact from './pages/Contact'
 import LegalNotice from './pages/LegalNotice'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import CookiesPolicy from './pages/CookiesPolicy'
+import AccessibilityChecklist from './pages/AccessibilityChecklist'
 import { siteUrl, updateSeo } from './seo'
 
 const defaultDescription = 'Menvic Arquitectura desarrolla proyectos de arquitectura, documentación técnica, coordinación y construcción en Santa Cruz, Bolivia.'
@@ -24,6 +25,7 @@ const seoByPath = {
   '/aviso-legal': ['Aviso Legal | Menvic Arquitectura', 'Aviso legal de Menvic Arquitectura con información del titular, condiciones de uso y datos de contacto.'],
   '/politica-privacidad': ['Política de Privacidad | Menvic Arquitectura', 'Política de privacidad de Menvic Arquitectura: tratamiento de datos, finalidad, conservación y derechos del usuario.'],
   '/politica-cookies': ['Política de Cookies | Menvic Arquitectura', 'Información sobre el uso de cookies en menvic.com, finalidades y gestión de preferencias del usuario.'],
+  '/tools/accesibilidad': ['Revisión de Accesibilidad | MENVIC', 'Herramienta interna de MENVIC para revisión de accesibilidad arquitectónica.'],
 }
 
 function SeoSync() {
@@ -47,11 +49,14 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  const location = useLocation()
+  const isInternalTool = location.pathname.startsWith('/tools/')
+
   return (
     <>
       <SeoSync />
       <ScrollToTop />
-      <Header />
+      {!isInternalTool && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/index.html" element={<Navigate to="/" replace />} />
@@ -73,9 +78,10 @@ export default function App() {
         <Route path="/politica-privacidad.html" element={<Navigate to="/politica-privacidad" replace />} />
         <Route path="/politica-cookies" element={<CookiesPolicy />} />
         <Route path="/politica-cookies.html" element={<Navigate to="/politica-cookies" replace />} />
+        <Route path="/tools/accesibilidad" element={<AccessibilityChecklist />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <Footer />
+      {!isInternalTool && <Footer />}
     </>
   )
 }
