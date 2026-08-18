@@ -1003,3 +1003,49 @@
     gap: 4px;
   }
 }
+
+/* ACCESSIBILITY-DATE-CONTRAST-START */
+
+/* Último cambio: contraste reforzado */
+.access-date-cell span {
+  color: #24364d;
+  font-weight: 800;
+}
+
+.access-date-cell small {
+  color: #43556d;
+  font-weight: 700;
+}
+
+.access-row-wrap.is-done .access-date-cell span,
+.access-row-wrap.is-done .access-date-cell small {
+  color: #24364d;
+}
+
+/* ACCESSIBILITY-DATE-CONTRAST-END */
+
+/* ACCESSIBILITY-SUMMARY-CONTRAST-START */
+
+/* Stronger contrast for summary cards */
+.access-summary-card > span,
+.access-progress-card span {
+  color: #3b4a5f;
+  font-weight: 850;
+}
+
+.access-summary-card small,
+.access-progress-card small {
+  color: #52647a;
+  font-weight: 650;
+}
+
+.access-summary-card > strong {
+  color: #172a46;
+  font-weight: 800;
+}
+
+.access-progress {
+  background: #d4dae2;
+}
+
+/* ACCESSIBILITY-SUMMARY-CONTRAST-END */
