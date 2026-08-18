@@ -1049,3 +1049,53 @@
 }
 
 /* ACCESSIBILITY-SUMMARY-CONTRAST-END */
+
+/* ACCESSIBILITY-INFO-LUCIDE-START */
+
+/*
+ * El detalle siempre crece debajo de la fila.
+ * Evita que el navegador cambie el punto de anclaje al expandirlo.
+ */
+.access-row-wrap {
+  overflow-anchor: none;
+}
+
+.access-info-button {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #53657b;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.access-info-button svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.access-info-button:hover {
+  background: #edf7f1;
+  color: #087247;
+}
+
+.access-info-button.is-active {
+  background: #e2f4e9;
+  color: #087247;
+}
+
+.access-info-button:focus-visible {
+  outline: 2px solid #15915d;
+  outline-offset: 2px;
+}
+
+/* ACCESSIBILITY-INFO-LUCIDE-END */

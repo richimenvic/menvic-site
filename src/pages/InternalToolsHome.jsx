@@ -1,4 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
+import {
+  Accessibility,
+  ArrowRight,
+  LockKeyhole,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 import '../accessibility-tool.css'
 import '../internal-tools-home.css'
@@ -27,30 +32,8 @@ async function rpc(functionName, body) {
   return response.json().catch(() => null)
 }
 
-function LockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M7 10V7.5a5 5 0 0 1 10 0V10M6 10h12a1 1 0 0 1 1 1v9H5v-9a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
-function AccessibilityIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M8 4.5h8M12 4.5v4M7.5 9h9M9.5 9l-1.3 4.2M14.5 9l1.3 4.2M8.2 13.2l-2.7 5.3M15.8 13.2l2.7 5.3M9.5 13.2h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="3.4" r="1.4" fill="currentColor" />
-    </svg>
-  )
-}
 
-function ArrowIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
 export default function InternalToolsHome() {
   const [actor, setActor] = useState('')
@@ -136,7 +119,9 @@ export default function InternalToolsHome() {
             </div>
             <label htmlFor="tools-pin">Clave de acceso</label>
             <div className="access-pin-wrap">
-              <span><LockIcon /></span>
+              <span>
+                <LockKeyhole size={20} strokeWidth={2.1} aria-hidden="true" />
+              </span>
               <input id="tools-pin" type="password" inputMode="numeric" autoComplete="one-time-code" value={enteredPin} onChange={(event) => setEnteredPin(event.target.value)} placeholder="••••" maxLength={12} autoFocus />
             </div>
             {error && <div className="access-login-error" role="alert">{error}</div>}
@@ -167,14 +152,19 @@ export default function InternalToolsHome() {
 
         <div className="tools-card-grid">
           <Link className="tools-card" to="/tools/accesibilidad">
-            <div className="tools-card-icon"><AccessibilityIcon /></div>
+            <div className="tools-card-icon">
+              <Accessibility size={30} strokeWidth={1.9} aria-hidden="true" />
+            </div>
             <div className="tools-card-body">
               <span>Revit · QA/QC</span>
               <h2>Revisión de Accesibilidad</h2>
               <p>Checklist compartido de 71 puntos para revisar el Anexo VII en el Edificio Auxiliar – La Paz.</p>
               <div className="tools-card-meta">Ricardo + Javier · sincronizado en Supabase</div>
             </div>
-            <div className="tools-card-action">Abrir <ArrowIcon /></div>
+            <div className="tools-card-action">
+              Abrir
+              <ArrowRight size={18} strokeWidth={2.1} aria-hidden="true" />
+            </div>
           </Link>
         </div>
       </section>

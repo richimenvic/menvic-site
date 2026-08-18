@@ -1,4 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Info,
+  LockKeyhole,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Square,
+  SquareCheckBig,
+} from 'lucide-react'
 import '../accessibility-tool.css'
 
 const SUPABASE_URL = 'https://ttnzobxsdeoazhqtiayw.supabase.co'
@@ -155,40 +163,9 @@ const allItems = sections.flatMap((section) => section.items.map(([id, title, de
   source,
 })))
 
-function CheckIcon({ checked = false }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="4" fill={checked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" />
-      {checked && <path d="m7.5 12.2 3 3.1 6.3-6.7" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />}
-    </svg>
-  )
-}
 
-function InfoIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M12 10.7v5.2M12 7.6h.01" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
 
-function LockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
 
-function SidebarToggleIcon({ collapsed }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d={collapsed ? 'm9 6 6 6-6 6' : 'm15 6-6 6 6 6'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
 async function rpc(name, payload) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
@@ -263,7 +240,9 @@ function LoginPanel({ onLogin, busy, error }) {
 
           <label htmlFor="access-pin">Clave de acceso</label>
           <div className="access-pin-wrap">
-            <span><LockIcon /></span>
+            <span>
+              <LockKeyhole size={20} strokeWidth={2.1} aria-hidden="true" />
+            </span>
             <input id="access-pin" type="password" inputMode="numeric" autoComplete="one-time-code" value={pin} onChange={(event) => setPin(event.target.value)} placeholder="••••" maxLength={12} autoFocus />
           </div>
 
@@ -434,10 +413,17 @@ export default function AccessibilityChecklist() {
           aria-label={sidebarCollapsed ? 'Mostrar panel lateral' : 'Ocultar panel lateral'}
           aria-expanded={!sidebarCollapsed}
         >
-          <SidebarToggleIcon collapsed={sidebarCollapsed} />
+          {sidebarCollapsed ? (
+            <PanelLeftOpen size={22} strokeWidth={2.1} aria-hidden="true" />
+          ) : (
+            <PanelLeftClose size={22} strokeWidth={2.1} aria-hidden="true" />
+          )}
         </button>
         <img src="/img/brand/menvic-logo.png" alt="Menvic Arquitectura" className="access-brand" />
-        <div className="access-sidebar-title"><CheckIcon checked /> <span>Revisión de<br />Accesibilidad</span></div>
+        <div className="access-sidebar-title">
+          <SquareCheckBig size={22} strokeWidth={2.1} aria-hidden="true" />
+          <span>Revisión de<br />Accesibilidad</span>
+        </div>
         <div className="access-sidebar-session">
           <span>Sesión</span>
           <strong>{actor}</strong>
@@ -514,12 +500,16 @@ export default function AccessibilityChecklist() {
                           onClick={() => updateCheck(id, { status: isDone ? 'pending' : 'done' })}
                           disabled={savingId === id}
                         >
-                          <CheckIcon checked={isDone} />
+                          {isDone ? (
+                            <SquareCheckBig size={24} strokeWidth={2.2} aria-hidden="true" />
+                          ) : (
+                            <Square size={24} strokeWidth={1.9} aria-hidden="true" />
+                          )}
                         </button>
 
                         <div className="access-point">
                           <span>{title}</span>
-                          <button className="access-info-button" type="button" onClick={() => setExpanded(isExpanded ? '' : id)} aria-label={`Ver detalle de ${title}`}><InfoIcon /></button>
+                          <button className="access-info-button" type="button" onClick={() => setExpanded(isExpanded ? '' : id)} aria-label={`Ver detalle de ${title}`}><Info size={20} strokeWidth={2.1} aria-hidden="true" /></button>
                         </div>
 
                         <select value={state.responsible || ''} onChange={(event) => updateCheck(id, { responsible: event.target.value })} disabled={savingId === id} aria-label={`Responsable de ${title}`}>
