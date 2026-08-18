@@ -185,6 +185,11 @@
 .access-tool-page {
   display: grid;
   grid-template-columns: 238px minmax(0, 1fr);
+  transition: grid-template-columns 180ms ease;
+}
+
+.access-tool-page.is-sidebar-collapsed {
+  grid-template-columns: 58px minmax(0, 1fr);
 }
 
 .access-sidebar {
@@ -192,11 +197,57 @@
   top: 0;
   align-self: start;
   height: 100vh;
+  min-width: 0;
+  overflow: hidden;
   background: #fff;
   border-right: 1px solid var(--access-line);
   padding: 28px 18px 22px;
   display: flex;
   flex-direction: column;
+  transition: padding 180ms ease;
+}
+
+.access-sidebar-toggle {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  border: 1px solid #d0d5dd;
+  border-radius: 9px;
+  background: #fff;
+  color: #475467;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+.access-sidebar-toggle:hover {
+  border-color: #98a2b3;
+  color: var(--access-green-dark);
+}
+
+.access-sidebar-toggle svg {
+  width: 100%;
+  height: 100%;
+}
+
+.access-tool-page.is-sidebar-collapsed .access-sidebar {
+  padding: 16px 8px;
+}
+
+.access-tool-page.is-sidebar-collapsed .access-sidebar-toggle {
+  right: 50%;
+  transform: translateX(50%);
+}
+
+.access-tool-page.is-sidebar-collapsed .access-brand,
+.access-tool-page.is-sidebar-collapsed .access-sidebar-title,
+.access-tool-page.is-sidebar-collapsed .access-sidebar-session {
+  display: none;
 }
 
 .access-brand {
@@ -669,16 +720,24 @@
 
 .access-detail-row p {
   margin: 0;
-  color: #475467;
+  color: #344054;
   font-size: 13px;
   line-height: 1.55;
 }
 
 .access-detail-row small {
-  display: block;
-  margin-top: 8px;
-  color: #98a2b3;
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 5px 8px;
+  border: 1px solid #bfe7cf;
+  border-radius: 7px;
+  background: #e7f6ed;
+  color: #14543b;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
 }
 
 .access-detail-row textarea {
@@ -715,9 +774,18 @@
     grid-template-columns: 190px minmax(0, 1fr);
   }
 
+  .access-tool-page.is-sidebar-collapsed {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
   .access-sidebar {
     padding-left: 14px;
     padding-right: 14px;
+  }
+
+  .access-tool-page.is-sidebar-collapsed .access-sidebar {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 
   .access-brand {
@@ -738,7 +806,7 @@
 
   .access-list-head,
   .access-row {
-    min-width: 950px;
+    min-width: 900px;
   }
 }
 
@@ -747,11 +815,13 @@
     padding: 28px 22px;
   }
 
-  .access-tool-page {
+  .access-tool-page,
+  .access-tool-page.is-sidebar-collapsed {
     display: block;
   }
 
-  .access-sidebar {
+  .access-sidebar,
+  .access-tool-page.is-sidebar-collapsed .access-sidebar {
     position: static;
     height: auto;
     border-right: 0;
@@ -760,6 +830,22 @@
     flex-direction: row;
     align-items: center;
     gap: 14px;
+  }
+
+  .access-sidebar-toggle {
+    display: none;
+  }
+
+  .access-tool-page.is-sidebar-collapsed .access-brand {
+    display: block;
+  }
+
+  .access-tool-page.is-sidebar-collapsed .access-sidebar-title {
+    display: flex;
+  }
+
+  .access-tool-page.is-sidebar-collapsed .access-sidebar-session {
+    display: grid;
   }
 
   .access-brand {
