@@ -134,6 +134,12 @@ export default function AccessibilityReviewDetail({
             rows="4"
           />
         </label>
+        <div className="access-note-actions">
+          <small>Se guarda al salir del campo o con Ctrl+Enter.</small>
+          <button type="button" onClick={saveNote} disabled={!dirty || noteState === 'Guardando…'}>
+            {noteState === 'Guardando…' ? 'Guardando…' : 'Guardar observación'}
+          </button>
+        </div>
 
         <div className="access-evidence-block" tabIndex="0" onPaste={handlePaste}>
           <div className="access-evidence-heading">
