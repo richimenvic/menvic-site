@@ -151,7 +151,8 @@
 }
 
 .access-evidence-heading button,
-.access-report-button {
+.access-report-button,
+.access-view-toggle {
   flex: 0 0 auto;
   min-height: 38px;
   border: 1px solid #b9c3cf;
@@ -166,7 +167,8 @@
 }
 
 .access-evidence-heading button:hover:not(:disabled),
-.access-report-button:hover:not(:disabled) {
+.access-report-button:hover:not(:disabled),
+.access-view-toggle:hover {
   border-color: var(--access-green);
   color: var(--access-green-dark);
 }
@@ -177,17 +179,23 @@
   cursor: wait;
 }
 
+.access-view-toggle.is-active {
+  border-color: var(--access-green);
+  background: var(--access-green-soft);
+  color: var(--access-green-dark);
+}
+
 .access-evidence-empty {
   margin-top: 10px;
-  min-height: 54px;
+  min-height: 70px;
   display: grid;
   place-items: center;
   border-radius: 8px;
   background: #f3f5f7;
-  color: #7a8798;
-  font-size: 11px;
+  color: #667085;
+  font-size: 13px;
   text-align: center;
-  padding: 10px;
+  padding: 14px;
 }
 
 .access-evidence-error {
@@ -195,16 +203,16 @@
   border-radius: 8px;
   background: #fff1f0;
   color: #b42318;
-  padding: 8px 10px;
-  font-size: 11px;
+  padding: 9px 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .access-evidence-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .access-evidence-card {
@@ -216,18 +224,35 @@
   background: #fff;
 }
 
-.access-evidence-card a {
+.access-evidence-image-button {
+  position: relative;
   display: block;
-  aspect-ratio: 4 / 3;
+  width: 100%;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
+  border: 0;
+  padding: 0;
   background: #eef1f4;
+  cursor: zoom-in;
 }
 
-.access-evidence-card img {
+.access-evidence-image-button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+}
+
+.access-evidence-image-button > span {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 7px;
+  background: rgba(17, 24, 39, 0.82);
+  color: #fff;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .access-evidence-card figcaption {
@@ -235,9 +260,9 @@
   justify-content: space-between;
   align-items: center;
   gap: 6px;
-  padding: 7px 8px;
+  padding: 8px 9px;
   color: #667085;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .access-evidence-card figcaption span {
@@ -257,16 +282,250 @@
   cursor: pointer;
 }
 
-.access-toolbar-actions {
+.access-toolbar-actions,
+.access-topbar-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.access-topbar-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .access-report-button {
   border-color: #96c8aa;
   background: #eef9f2;
   color: #0b6b47;
+}
+
+.access-image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: rgba(9, 15, 24, 0.97);
+  color: #fff;
+  padding: 16px;
+}
+
+.access-image-viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+}
+
+.access-image-viewer-bar > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+}
+
+.access-image-viewer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.access-image-viewer-controls button {
+  min-width: 44px;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.access-image-viewer-controls button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.access-image-viewer-controls .is-close {
+  background: #fff;
+  color: #172033;
+}
+
+.access-image-viewer-scroll {
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 10px;
+  background: #1b222d;
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
+.access-image-viewer-scroll.is-zoomed {
+  justify-content: flex-start;
+  cursor: grab;
+}
+
+.access-image-viewer-scroll.is-zoomed:active {
+  cursor: grabbing;
+}
+
+.access-image-viewer-scroll img {
+  flex: 0 0 auto;
+  max-width: none;
+  height: auto;
+  min-width: 50%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.access-image-viewer-help {
+  display: block;
+  padding-top: 10px;
+  color: #d0d5dd;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Vista grande: pensada para lectura cómoda sin cambiar el zoom del navegador. */
+.access-tool-page.is-large-view .access-topbar h1 {
+  font-size: clamp(32px, 3.2vw, 42px);
+}
+
+.access-tool-page.is-large-view .access-topbar p,
+.access-tool-page.is-large-view .access-sync-state {
+  font-size: 16px;
+}
+
+.access-tool-page.is-large-view .access-summary-card > span,
+.access-tool-page.is-large-view .access-progress-card span {
+  font-size: 14px;
+}
+
+.access-tool-page.is-large-view .access-summary-card > strong {
+  font-size: 21px;
+}
+
+.access-tool-page.is-large-view .access-summary-card small,
+.access-tool-page.is-large-view .access-progress-card small {
+  color: #667085;
+  font-size: 15px;
+}
+
+.access-tool-page.is-large-view .access-filters button,
+.access-tool-page.is-large-view .access-copy-button,
+.access-tool-page.is-large-view .access-report-button,
+.access-tool-page.is-large-view .access-view-toggle {
+  min-height: 50px;
+  padding: 0 17px;
+  font-size: 16px;
+}
+
+.access-tool-page.is-large-view .access-list-head {
+  min-height: 50px;
+  font-size: 12px;
+}
+
+.access-tool-page.is-large-view .access-section h2 {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  font-size: 18px;
+}
+
+.access-tool-page.is-large-view .access-row {
+  min-height: 78px;
+}
+
+.access-tool-page.is-large-view .access-point > span {
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 750;
+}
+
+.access-tool-page.is-large-view .access-row select {
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.access-tool-page.is-large-view .access-status {
+  min-height: 38px;
+  padding: 9px 12px;
+  font-size: 15px;
+}
+
+.access-tool-page.is-large-view .access-na-button,
+.access-tool-page.is-large-view .access-date-cell {
+  font-size: 14px;
+}
+
+.access-tool-page.is-large-view .access-check-button {
+  width: 34px;
+  height: 34px;
+}
+
+.access-tool-page.is-large-view .access-info-button {
+  width: 30px;
+  height: 30px;
+}
+
+.access-tool-page.is-large-view .access-detail-row-v2 {
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.access-tool-page.is-large-view .access-detail-row-v2 textarea {
+  min-height: 140px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.access-tool-page.is-large-view .access-note-state,
+.access-tool-page.is-large-view .access-note-actions small {
+  font-size: 14px !important;
+}
+
+.access-tool-page.is-large-view .access-note-actions button,
+.access-tool-page.is-large-view .access-evidence-heading button {
+  min-height: 48px;
+  padding: 0 15px;
+  font-size: 16px;
+}
+
+.access-tool-page.is-large-view .access-source-badge span {
+  font-size: 12px;
+}
+
+.access-tool-page.is-large-view .access-source-badge b {
+  font-size: 16px;
+}
+
+.access-tool-page.is-large-view .access-evidence-heading strong {
+  font-size: 18px;
+}
+
+.access-tool-page.is-large-view .access-evidence-heading small,
+.access-tool-page.is-large-view .access-evidence-empty,
+.access-tool-page.is-large-view .access-evidence-error {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.access-tool-page.is-large-view .access-evidence-grid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.access-tool-page.is-large-view .access-evidence-card figcaption,
+.access-tool-page.is-large-view .access-evidence-image-button > span {
+  font-size: 14px;
 }
 
 @media (max-width: 760px) {
@@ -294,8 +553,9 @@
     width: 100%;
   }
 
-  .access-evidence-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .access-evidence-grid,
+  .access-tool-page.is-large-view .access-evidence-grid {
+    grid-template-columns: 1fr;
   }
 
   .access-toolbar-actions {
@@ -307,5 +567,28 @@
   .access-toolbar-actions .access-copy-button,
   .access-toolbar-actions .access-report-button {
     width: 100%;
+  }
+
+  .access-topbar-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .access-image-viewer {
+    padding: 10px;
+  }
+
+  .access-image-viewer-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .access-image-viewer-controls {
+    justify-content: stretch;
+  }
+
+  .access-image-viewer-controls button {
+    flex: 1 1 auto;
+    min-height: 48px;
   }
 }
