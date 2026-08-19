@@ -20,6 +20,47 @@ function appendObservationLanguage(document, container, label, value) {
   container.appendChild(block)
 }
 
+function reportStatus(state = {}) {
+  if (!state.reviewed) return ['Pendiente', 'Pending', 'pending']
+  if (state.status === 'done') return ['Cumple', 'Complies', 'done']
+  if (state.status === 'fail') return ['No cumple', 'Does not comply', 'fail']
+  if (state.status === 'na') return ['No aplica', 'N/A', 'na']
+  return ['Sin definir', 'No result', 'pending']
+}
+
+function replaceSummary(document, options, itemIds) {
+  const states = itemIds.map((id) => options.checkState?.[id] || {})
+  const total = itemIds.length
+  const reviewed = states.filter((state) => state.reviewed === true).length
+  const done = states.filter((state) => state.reviewed === true && state.status === 'done').length
+  const fail = states.filter((state) => state.reviewed === true && state.status === 'fail').length
+  const na = states.filter((state) => state.reviewed === true && state.status === 'na').length
+  const pending = total - reviewed
+
+  const summary = document.querySelector('.summary')
+  if (!summary) return
+
+  const values = [
+    ['Total', total],
+    ['Revisados / Reviewed', reviewed],
+    ['Cumplen / Comply', done],
+    ['No cumplen / Do not comply', fail],
+    ['Pendientes / Pending', pending],
+    ['N/A', na],
+  ]
+
+  summary.replaceChildren()
+  values.forEach(([label, value]) => {
+    const cell = document.createElement('div')
+    const text = document.createElement('span')
+    const count = document.createElement('b')
+    text.textContent = label
+    count.textContent = String(value)
+    cell.append(text, count)
+    summary.appendChild(cell)
+  })
+}
+
 export async function printAccessibilityReport(options) {
   const originalOpen = window.open
   let reportWindow = null
@@ -45,11 +86,28 @@ export async function printAccessibilityReport(options) {
   const itemIds = options.sections.flatMap((section) => section.items.map(([id]) => id))
   const reportItems = Array.from(document.querySelectorAll('.item'))
 
+  replaceSummary(document, options, itemIds)
+
   reportItems.forEach((article, index) => {
     article.querySelector('.meta')?.remove()
 
     const id = itemIds[index]
     const state = options.checkState?.[id] || {}
+    const [statusEs, statusEn, statusClass] = reportStatus(state)
+    const status = article.querySelector('.status')
+
+    article.classList.remove('done', 'fail', 'na', 'pending')
+    article.classList.add(statusClass)
+
+    if (status) {
+      status.className = `status ${statusClass}`
+      status.replaceChildren()
+      status.append(document.createTextNode(statusEs))
+      const small = document.createElement('small')
+      small.textContent = statusEn
+      status.appendChild(small)
+    }
+
     const noteEs = state.note?.trim() || ''
     const noteEn = state.note_en?.trim() || ''
     let noteBlock = article.querySelector('.note')
@@ -86,6 +144,17 @@ export async function printAccessibilityReport(options) {
     }
   })
 
+  document.querySelectorAll('.section').forEach((section) => {
+    const title = section.querySelector(':scope > h2')
+    const firstItem = section.querySelector(':scope > .item')
+    if (!title || !firstItem) return
+
+    const start = document.createElement('div')
+    start.className = 'report-section-start'
+    section.insertBefore(start, title)
+    start.append(title, firstItem)
+  })
+
   document.querySelectorAll('.evidence figcaption').forEach((caption) => caption.remove())
 
   const originalHeader = page.querySelector('header')
@@ -100,6 +169,33 @@ export async function printAccessibilityReport(options) {
   const style = document.createElement('style')
 
   style.textContent = `
+    .summary {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+
+    .item.fail {
+      border-left-color: #c83a3a !important;
+      background: #fff7f7 !important;
+    }
+
+    .status.fail {
+      background: #fdecec !important;
+      color: #a61b1b !important;
+    }
+
+    .report-section-start > h2 {
+      font-size: 15px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #b8c1cc;
+      padding: 8px 0;
+      margin: 0 0 8px;
+    }
+
+    .report-section-start > h2 span {
+      font-weight: 500;
+      color: #536174;
+    }
+
     .report-observation-language + .report-observation-language {
       margin-top: 7px;
       padding-top: 7px;
@@ -169,21 +265,15 @@ export async function printAccessibilityReport(options) {
         border: 0 !important;
       }
 
-      /*
-       * Header real de cada pagina.
-       * Al formar parte de THEAD reserva espacio en todas las paginas.
-       */
       .report-menvic-header {
         display: flex !important;
         height: 20mm;
         margin: 0 12mm;
         padding: 5mm 0 2.5mm;
         box-sizing: border-box;
-
         align-items: flex-start;
         justify-content: space-between;
         gap: 8mm;
-
         border-bottom: 0.45mm solid #167a4f;
         background: #fff;
         color: #172033;
@@ -217,20 +307,15 @@ export async function printAccessibilityReport(options) {
         margin: 0 !important;
       }
 
-      /*
-       * Footer repetido. TFOOT tambien reserva su espacio.
-       */
       .report-menvic-footer {
         display: flex !important;
         height: 12mm;
         margin: 0 12mm;
         padding: 2.5mm 0 4mm;
         box-sizing: border-box;
-
         align-items: flex-end;
         justify-content: space-between;
         gap: 10mm;
-
         border-top: 0.3mm solid #b8c1cc;
         background: #fff;
         color: #536174;
@@ -241,10 +326,6 @@ export async function printAccessibilityReport(options) {
         text-align: right;
       }
 
-      /*
-       * El header original del reporte solo aparece en pantalla.
-       * En papel lo sustituye el THEAD repetido.
-       */
       .page > header {
         display: none !important;
       }
@@ -260,13 +341,13 @@ export async function printAccessibilityReport(options) {
         display: none !important;
       }
 
-      /* Compact cards: preserve legibility while fitting more review items per page. */
       body {
         font-size: 9px !important;
         line-height: 1.28 !important;
       }
 
       .summary {
+        grid-template-columns: repeat(6, 1fr) !important;
         gap: 5px !important;
         margin: 8px 0 12px !important;
       }
@@ -283,19 +364,16 @@ export async function printAccessibilityReport(options) {
         margin-bottom: 10px !important;
       }
 
-      .section > h2 {
+      .report-section-start {
+        break-inside: avoid-page !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
+      }
+
+      .report-section-start > h2 {
         font-size: 12px !important;
         padding: 4px 0 !important;
         margin-bottom: 5px !important;
-        break-after: avoid-page !important;
-        page-break-after: avoid !important;
-        -webkit-column-break-after: avoid !important;
-      }
-
-      .section > h2 + .item {
-        break-before: avoid-page !important;
-        page-break-before: avoid !important;
-        -webkit-column-break-before: avoid !important;
       }
 
       .item {
@@ -305,6 +383,12 @@ export async function printAccessibilityReport(options) {
         break-inside: auto !important;
         page-break-inside: auto !important;
         -webkit-column-break-inside: auto !important;
+      }
+
+      .report-section-start > .item {
+        break-inside: avoid-page !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
       }
 
       .report-item-core {
