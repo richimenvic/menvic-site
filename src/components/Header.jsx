@@ -6,6 +6,7 @@ const links = [
   { to: '/proyectos', label: 'Proyectos' },
   { to: '/estudio', label: 'Estudio' },
   { to: '/servicios', label: 'Servicios' },
+  { to: '/tools', label: 'Herramientas' },
   { to: '/contacto', label: 'Contacto' },
 ]
 
