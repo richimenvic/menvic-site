@@ -19,6 +19,28 @@ const PROJECT_SLUG = 'edificio-auxiliar-la-paz'
 const ACTORS = ['Ricardo', 'Javier']
 const REALTIME_URL = `${SUPABASE_URL.replace(/^http/, 'ws')}/realtime/v1/websocket`
 const PRESENCE_TOPIC = `realtime:menvic-accessibility:${PROJECT_SLUG}`
+const CHATGPT_OBSERVATIONS_PROMPT = [
+  'Corrige y traduce las siguientes observaciones del checklist de accesibilidad.',
+  '',
+  'INSTRUCCIONES OBLIGATORIAS:',
+  '- Mantén exactamente los mismos IDs.',
+  '- Mantén exactamente el mismo número de registros y el mismo orden.',
+  '- No agregues ni elimines observaciones.',
+  '- Corrige ortografía, gramática, puntuación y redacción del campo "es".',
+  '- Mantén el significado técnico original. No inventes información ni cambies medidas, requisitos, nombres, estados o conclusiones.',
+  '- Traduce el texto corregido al inglés profesional y natural en el campo "en".',
+  '- Si el campo "en" ya contiene texto, revísalo y corrígelo para que corresponda exactamente al español corregido.',
+  '- Conserva únicamente los campos "id", "es" y "en".',
+  '',
+  'SALIDA OBLIGATORIA:',
+  'Devuelve ÚNICAMENTE un array JSON válido.',
+  'No escribas explicaciones.',
+  'No escribas texto antes ni después.',
+  'No uses bloques de código ni ```json.',
+  'La respuesta debe poder copiarse directamente y pegarse en la función "Pegar traducciones" de MENVIC.',
+  '',
+  'OBSERVACIONES:',
+].join('\n')
 
 async function rpc(name, payload) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
@@ -510,8 +532,9 @@ export default function AccessibilityChecklistV2() {
     }
 
     try {
-      await navigator.clipboard.writeText(JSON.stringify(rows, null, 2))
-      setSyncMessage(`${rows.length} observaciones copiadas`)
+      const payload = `${CHATGPT_OBSERVATIONS_PROMPT}\n${JSON.stringify(rows, null, 2)}`
+      await navigator.clipboard.writeText(payload)
+      setSyncMessage(`${rows.length} observaciones + prompt para ChatGPT copiados`)
     } catch {
       setError('No se pudo copiar al portapapeles.')
     }
@@ -679,7 +702,7 @@ export default function AccessibilityChecklistV2() {
             <button className="access-report-button" type="button" onClick={generateReport} disabled={reportBusy}>
               {reportBusy ? 'Preparando…' : 'PDF / Imprimir reporte'}
             </button>
-            <button className="access-copy-button" type="button" onClick={copyObservations}>Copiar observaciones</button>
+            <button className="access-copy-button" type="button" onClick={copyObservations}>Copiar para ChatGPT</button>
             <button className="access-copy-button" type="button" onClick={pasteTranslations}>Pegar traducciones</button>
             <button className="access-copy-button" type="button" onClick={copyPending}>Copiar pendientes</button>
           </div>
