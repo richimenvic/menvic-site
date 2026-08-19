@@ -17,10 +17,8 @@ const SUPABASE_URL = 'https://ttnzobxsdeoazhqtiayw.supabase.co'
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-UpgvMJTFdY4R7bRNUcVvg_1v2rqdXk'
 const PROJECT_SLUG = 'edificio-auxiliar-la-paz'
 const ACTORS = ['Ricardo', 'Javier']
-
-
-
-
+const REALTIME_URL = `${SUPABASE_URL.replace(/^http/, 'ws')}/realtime/v1/websocket`
+const PRESENCE_TOPIC = `realtime:menvic-accessibility:${PROJECT_SLUG}`
 
 async function rpc(name, payload) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
@@ -121,6 +119,7 @@ export default function AccessibilityChecklistV2() {
   const [reportBusy, setReportBusy] = useState(false)
   const [error, setError] = useState('')
   const [syncMessage, setSyncMessage] = useState('')
+  const [onlineActors, setOnlineActors] = useState([])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 1180px)').matches)
   const [largeView, setLargeView] = useState(() => localStorage.getItem('menvic-accessibility-large-view') === '1')
 
@@ -192,6 +191,182 @@ export default function AccessibilityChecklistV2() {
     }, 15000)
     return () => window.clearInterval(timer)
   }, [actor, pin, loadState])
+
+  useEffect(() => {
+    if (!actor || !pin) {
+      setOnlineActors([])
+      return undefined
+    }
+
+    let active = true
+    let socket = null
+    let heartbeatTimer = null
+    let reconnectTimer = null
+    let reconnectAttempt = 0
+    let refCounter = 0
+    let joinRef = ''
+    const presenceByRef = new Map()
+
+    const nextRef = () => String(++refCounter)
+
+    const publishPresence = () => {
+      const present = new Set(presenceByRef.values())
+      setOnlineActors(ACTORS.filter((name) => present.has(name)))
+    }
+
+    const clearHeartbeat = () => {
+      if (heartbeatTimer) window.clearInterval(heartbeatTimer)
+      heartbeatTimer = null
+    }
+
+    const send = (topic, event, payload, messageJoinRef = joinRef) => {
+      if (!socket || socket.readyState !== WebSocket.OPEN) return ''
+      const ref = nextRef()
+      socket.send(JSON.stringify({
+        topic,
+        event,
+        payload,
+        ref,
+        join_ref: messageJoinRef || null,
+      }))
+      return ref
+    }
+
+    const readPresenceState = (payload) => {
+      presenceByRef.clear()
+      Object.values(payload || {}).forEach((entry) => {
+        entry?.metas?.forEach((meta) => {
+          if (meta?.phx_ref && ACTORS.includes(meta.actor)) {
+            presenceByRef.set(meta.phx_ref, meta.actor)
+          }
+        })
+      })
+      publishPresence()
+    }
+
+    const applyPresenceDiff = (payload) => {
+      Object.values(payload?.joins || {}).forEach((entry) => {
+        entry?.metas?.forEach((meta) => {
+          if (meta?.phx_ref && ACTORS.includes(meta.actor)) {
+            presenceByRef.set(meta.phx_ref, meta.actor)
+          }
+        })
+      })
+      Object.values(payload?.leaves || {}).forEach((entry) => {
+        entry?.metas?.forEach((meta) => {
+          if (meta?.phx_ref) presenceByRef.delete(meta.phx_ref)
+        })
+      })
+      publishPresence()
+    }
+
+    const scheduleReconnect = () => {
+      if (!active || reconnectTimer) return
+      const delay = Math.min(1000 * (2 ** reconnectAttempt), 8000)
+      reconnectAttempt += 1
+      reconnectTimer = window.setTimeout(() => {
+        reconnectTimer = null
+        connect()
+      }, delay)
+    }
+
+    const connect = () => {
+      if (!active) return
+      presenceByRef.clear()
+      publishPresence()
+      joinRef = ''
+
+      socket = new WebSocket(`${REALTIME_URL}?apikey=${encodeURIComponent(SUPABASE_PUBLISHABLE_KEY)}&vsn=1.0.0`)
+
+      socket.addEventListener('open', () => {
+        reconnectAttempt = 0
+        joinRef = nextRef()
+        socket.send(JSON.stringify({
+          topic: PRESENCE_TOPIC,
+          event: 'phx_join',
+          payload: {
+            config: {
+              broadcast: { ack: false, self: false },
+              presence: { enabled: true },
+              postgres_changes: [],
+              private: false,
+            },
+          },
+          ref: joinRef,
+          join_ref: joinRef,
+        }))
+
+        clearHeartbeat()
+        heartbeatTimer = window.setInterval(() => {
+          send('phoenix', 'heartbeat', {}, '')
+        }, 25000)
+      })
+
+      socket.addEventListener('message', (event) => {
+        let message
+        try {
+          message = JSON.parse(event.data)
+        } catch {
+          return
+        }
+
+        if (message.topic === PRESENCE_TOPIC && message.event === 'presence_state') {
+          readPresenceState(message.payload)
+          return
+        }
+
+        if (message.topic === PRESENCE_TOPIC && message.event === 'presence_diff') {
+          applyPresenceDiff(message.payload)
+          return
+        }
+
+        if (
+          message.topic === PRESENCE_TOPIC
+          && message.event === 'phx_reply'
+          && message.ref === joinRef
+          && message.payload?.status === 'ok'
+        ) {
+          send(PRESENCE_TOPIC, 'presence', {
+            type: 'presence',
+            event: 'track',
+            payload: { actor },
+          })
+        }
+      })
+
+      socket.addEventListener('close', () => {
+        clearHeartbeat()
+        presenceByRef.clear()
+        publishPresence()
+        scheduleReconnect()
+      })
+
+      socket.addEventListener('error', () => {
+        if (socket?.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) {
+          socket.close()
+        }
+      })
+    }
+
+    connect()
+
+    return () => {
+      active = false
+      clearHeartbeat()
+      if (reconnectTimer) window.clearTimeout(reconnectTimer)
+      reconnectTimer = null
+
+      if (socket?.readyState === WebSocket.OPEN) {
+        send(PRESENCE_TOPIC, 'presence', {
+          type: 'presence',
+          event: 'untrack',
+          payload: {},
+        })
+        send(PRESENCE_TOPIC, 'phx_leave', {})
+      }
+      socket?.close()
+    }
+  }, [actor, pin])
 
   useEffect(() => {
     const narrowViewport = window.matchMedia('(max-width: 1180px)')
@@ -373,7 +548,18 @@ export default function AccessibilityChecklistV2() {
           <div className="access-summary-card">
             <span>Revisando como</span>
             <strong>{actor}</strong>
-            <small>Los cambios se comparten entre Ricardo y Javier.</small>
+            <div className="access-presence-list" aria-label="Usuarios conectados">
+              {ACTORS.map((name) => {
+                const isOnline = onlineActors.includes(name)
+                return (
+                  <div className="access-presence-row" key={name}>
+                    <i className={`access-presence-dot ${isOnline ? 'is-online' : ''}`} aria-hidden="true" />
+                    <b>{name}</b>
+                    <small>{isOnline ? 'Online' : 'Offline'}</small>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
 
