@@ -4,6 +4,22 @@ function escText(value) {
   return String(value ?? '').replace(/[<>]/g, '')
 }
 
+function appendObservationLanguage(document, container, label, value) {
+  if (!value) return
+  const block = document.createElement('div')
+  block.className = 'report-observation-language'
+
+  const title = document.createElement('b')
+  title.textContent = label
+
+  const paragraph = document.createElement('p')
+  paragraph.textContent = value
+
+  block.appendChild(title)
+  block.appendChild(paragraph)
+  container.appendChild(block)
+}
+
 export async function printAccessibilityReport(options) {
   const originalOpen = window.open
   let reportWindow = null
@@ -26,9 +42,60 @@ export async function printAccessibilityReport(options) {
 
   if (!page) return
 
+  const itemIds = options.sections.flatMap((section) => section.items.map(([id]) => id))
+  const reportItems = Array.from(document.querySelectorAll('.item'))
+
+  reportItems.forEach((article, index) => {
+    article.querySelector('.meta')?.remove()
+
+    const id = itemIds[index]
+    const state = options.checkState?.[id] || {}
+    const noteEs = state.note?.trim() || ''
+    const noteEn = state.note_en?.trim() || ''
+    let noteBlock = article.querySelector('.note')
+
+    if (!noteEs && !noteEn) {
+      noteBlock?.remove()
+      return
+    }
+
+    if (!noteBlock) {
+      noteBlock = document.createElement('div')
+      noteBlock.className = 'note'
+      const evidence = article.querySelector('.evidence')
+      if (evidence) article.insertBefore(noteBlock, evidence)
+      else article.appendChild(noteBlock)
+    }
+
+    noteBlock.replaceChildren()
+    appendObservationLanguage(document, noteBlock, 'OBSERVACIÓN', noteEs)
+    appendObservationLanguage(document, noteBlock, 'OBSERVATION', noteEn)
+  })
+
+  document.querySelectorAll('.evidence figcaption').forEach((caption) => caption.remove())
+
+  const originalHeader = page.querySelector('header')
+  const headerParagraphs = originalHeader ? originalHeader.querySelectorAll('p') : []
+  if (headerParagraphs.length) {
+    const projectLine = headerParagraphs[headerParagraphs.length - 1]
+    const projectName = document.createElement('b')
+    projectName.textContent = options.projectName || ''
+    projectLine.replaceChildren(projectName)
+  }
+
   const style = document.createElement('style')
 
   style.textContent = `
+    .report-observation-language + .report-observation-language {
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px dashed #ead49f;
+    }
+
+    .report-observation-language p {
+      white-space: pre-wrap;
+    }
+
     .report-print-layout {
       width: 100%;
       border-collapse: collapse;
