@@ -245,6 +245,106 @@ export async function printAccessibilityReport(options) {
       .actions {
         display: none !important;
       }
+
+      /* Compact cards: preserve legibility while fitting more review items per page. */
+      body {
+        font-size: 9px !important;
+        line-height: 1.28 !important;
+      }
+
+      .summary {
+        gap: 5px !important;
+        margin: 8px 0 12px !important;
+      }
+
+      .summary div {
+        padding: 6px 7px !important;
+      }
+
+      .summary b {
+        font-size: 13px !important;
+      }
+
+      .section {
+        margin-bottom: 10px !important;
+      }
+
+      .section > h2 {
+        font-size: 12px !important;
+        padding: 4px 0 !important;
+        margin-bottom: 5px !important;
+      }
+
+      .item {
+        padding: 6px 8px !important;
+        margin-bottom: 5px !important;
+        border-left-width: 4px !important;
+      }
+
+      .item-head {
+        gap: 10px !important;
+      }
+
+      .item h3 {
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+        margin-bottom: 1px !important;
+      }
+
+      .item h4 {
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+      }
+
+      .status {
+        min-width: 62px !important;
+        padding: 3px 5px !important;
+        line-height: 1.15 !important;
+      }
+
+      .status small {
+        font-size: 7px !important;
+      }
+
+      .criteria-grid {
+        gap: 8px !important;
+        margin-top: 4px !important;
+      }
+
+      .criteria-grid b,
+      .note b {
+        font-size: 7.5px !important;
+      }
+
+      .criteria-grid p,
+      .note p {
+        margin: 1px 0 0 !important;
+      }
+
+      .source {
+        margin-top: 4px !important;
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+      }
+
+      .note {
+        margin-top: 4px !important;
+        padding: 5px 6px !important;
+      }
+
+      .report-observation-language + .report-observation-language {
+        margin-top: 4px !important;
+        padding-top: 4px !important;
+      }
+
+      .evidence {
+        gap: 5px !important;
+        margin-top: 5px !important;
+      }
+
+      .evidence img {
+        max-height: 105px !important;
+      }
     }
   `
 
