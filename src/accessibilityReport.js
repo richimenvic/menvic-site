@@ -287,6 +287,15 @@ export async function printAccessibilityReport(options) {
         font-size: 12px !important;
         padding: 4px 0 !important;
         margin-bottom: 5px !important;
+        break-after: avoid-page !important;
+        page-break-after: avoid !important;
+        -webkit-column-break-after: avoid !important;
+      }
+
+      .section > h2 + .item {
+        break-before: avoid-page !important;
+        page-break-before: avoid !important;
+        -webkit-column-break-before: avoid !important;
       }
 
       .item {
