@@ -49,6 +49,7 @@ function defaultCheckState(id) {
     status: 'pending',
     responsible: '',
     note: '',
+    note_en: '',
     completed_by: '',
     completed_at: null,
     updated_by: '',
@@ -471,6 +472,86 @@ export default function AccessibilityChecklistV2() {
     setSyncMessage('Pendientes copiados')
   }
 
+  const copyObservations = async () => {
+    const rows = allItems
+      .map((item) => {
+        const state = checkState[item.id] || {}
+        return {
+          id: item.id,
+          es: state.note?.trim() || '',
+          en: state.note_en?.trim() || '',
+        }
+      })
+      .filter((row) => row.es || row.en)
+
+    if (!rows.length) {
+      setSyncMessage('No hay observaciones para copiar')
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(rows, null, 2))
+      setSyncMessage(`${rows.length} observaciones copiadas`)
+    } catch {
+      setError('No se pudo copiar al portapapeles.')
+    }
+  }
+
+  const pasteTranslations = async () => {
+    const raw = window.prompt('Pega el JSON completo con los campos id, es y en. Solo se actualizarán las observaciones.')
+    if (raw === null) return
+
+    let rows
+    try {
+      rows = JSON.parse(raw)
+    } catch {
+      setError('El texto pegado no es un JSON válido.')
+      return
+    }
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      setError('El JSON debe ser una lista con al menos una observación.')
+      return
+    }
+
+    const validIds = new Set(allItems.map((item) => item.id))
+    const normalized = []
+    const seen = new Set()
+
+    for (const row of rows) {
+      const id = typeof row?.id === 'string' ? row.id.trim() : ''
+      if (!id || !validIds.has(id)) {
+        setError(`ID de observación no válido: ${id || 'sin ID'}.`)
+        return
+      }
+      if (seen.has(id)) {
+        setError(`El ID ${id} está repetido en el JSON.`)
+        return
+      }
+      if (typeof row.es !== 'string' || typeof row.en !== 'string') {
+        setError(`La fila ${id} debe incluir los textos es y en.`)
+        return
+      }
+      seen.add(id)
+      normalized.push({ id, es: row.es.trim(), en: row.en.trim() })
+    }
+
+    setError('')
+    setSyncMessage('Importando observaciones…')
+    try {
+      await rpc('menvic_accessibility_import_observations_v1', {
+        p_project_slug: PROJECT_SLUG,
+        p_pin: pin,
+        p_actor: actor,
+        p_rows: normalized,
+      })
+      await loadState()
+      setSyncMessage(`${normalized.length} observaciones actualizadas`)
+    } catch (importError) {
+      setError(importError.message)
+    }
+  }
+
   const generateReport = async () => {
     setReportBusy(true)
     setError('')
@@ -578,6 +659,8 @@ export default function AccessibilityChecklistV2() {
             <button className="access-report-button" type="button" onClick={generateReport} disabled={reportBusy}>
               {reportBusy ? 'Preparando…' : 'PDF / Imprimir reporte'}
             </button>
+            <button className="access-copy-button" type="button" onClick={copyObservations}>Copiar observaciones</button>
+            <button className="access-copy-button" type="button" onClick={pasteTranslations}>Pegar traducciones</button>
             <button className="access-copy-button" type="button" onClick={copyPending}>Copiar pendientes</button>
           </div>
         </div>
