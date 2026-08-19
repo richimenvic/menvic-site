@@ -56,20 +56,34 @@ export async function printAccessibilityReport(options) {
 
     if (!noteEs && !noteEn) {
       noteBlock?.remove()
-      return
+      noteBlock = null
+    } else {
+      if (!noteBlock) {
+        noteBlock = document.createElement('div')
+        noteBlock.className = 'note'
+        const evidence = article.querySelector('.evidence')
+        if (evidence) article.insertBefore(noteBlock, evidence)
+        else article.appendChild(noteBlock)
+      }
+
+      noteBlock.replaceChildren()
+      appendObservationLanguage(document, noteBlock, 'OBSERVACIÓN', noteEs)
+      appendObservationLanguage(document, noteBlock, 'OBSERVATION', noteEn)
     }
 
-    if (!noteBlock) {
-      noteBlock = document.createElement('div')
-      noteBlock.className = 'note'
-      const evidence = article.querySelector('.evidence')
-      if (evidence) article.insertBefore(noteBlock, evidence)
-      else article.appendChild(noteBlock)
-    }
+    const coreNodes = [
+      article.querySelector('.item-head'),
+      article.querySelector('.criteria-grid'),
+      article.querySelector('.source'),
+      article.querySelector('.note'),
+    ].filter(Boolean)
 
-    noteBlock.replaceChildren()
-    appendObservationLanguage(document, noteBlock, 'OBSERVACIÓN', noteEs)
-    appendObservationLanguage(document, noteBlock, 'OBSERVATION', noteEn)
+    if (coreNodes.length) {
+      const core = document.createElement('div')
+      core.className = 'report-item-core'
+      article.insertBefore(core, coreNodes[0])
+      coreNodes.forEach((node) => core.appendChild(node))
+    }
   })
 
   document.querySelectorAll('.evidence figcaption').forEach((caption) => caption.remove())
@@ -279,6 +293,15 @@ export async function printAccessibilityReport(options) {
         padding: 6px 8px !important;
         margin-bottom: 5px !important;
         border-left-width: 4px !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        -webkit-column-break-inside: auto !important;
+      }
+
+      .report-item-core {
+        break-inside: avoid-page !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
       }
 
       .item-head {
@@ -340,6 +363,15 @@ export async function printAccessibilityReport(options) {
       .evidence {
         gap: 5px !important;
         margin-top: 5px !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        -webkit-column-break-inside: auto !important;
+      }
+
+      .evidence figure {
+        break-inside: avoid-page !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
       }
 
       .evidence img {
