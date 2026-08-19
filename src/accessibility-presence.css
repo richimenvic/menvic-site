@@ -1,0 +1,40 @@
+.access-presence-list {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.access-presence-row {
+  display: grid;
+  grid-template-columns: 8px auto auto;
+  align-items: center;
+  justify-content: start;
+  gap: 7px;
+  color: #52647a;
+  font-size: 12px;
+}
+
+.access-presence-row b {
+  color: #344054;
+  font-weight: 750;
+}
+
+.access-summary-card .access-presence-row small {
+  margin: 0;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.access-presence-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #98a2b3;
+}
+
+.access-presence-dot.is-online {
+  background: var(--access-green);
+  box-shadow: 0 0 0 3px rgba(11, 143, 90, 0.09);
+}
