@@ -46,6 +46,7 @@ async function rpc(name, payload) {
 function defaultCheckState(id) {
   return {
     check_id: id,
+    reviewed: false,
     status: 'pending',
     responsible: '',
     note: '',
@@ -62,6 +63,22 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('es-ES', {
     day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit',
   }).format(new Date(value))
+}
+
+function statusStyle(status, reviewed) {
+  if (!reviewed || status === 'pending') {
+    return { borderColor: '#f6d69b', background: 'var(--access-amber-soft)', color: 'var(--access-amber)' }
+  }
+  if (status === 'done') {
+    return { borderColor: '#bfe7cf', background: '#e5f7ec', color: '#087247' }
+  }
+  if (status === 'fail') {
+    return { borderColor: '#f4b8b8', background: '#fff1f1', color: '#a61b1b' }
+  }
+  if (status === 'na') {
+    return { borderColor: '#d0d5dd', background: '#f2f4f7', color: '#667085' }
+  }
+  return undefined
 }
 
 function LoginPanel({ onLogin, busy, error }) {
@@ -134,7 +151,7 @@ export default function AccessibilityChecklistV2() {
 
   const loadState = useCallback(async (sessionPin = pin) => {
     if (!sessionPin) return
-    const rows = await rpc('menvic_accessibility_get_state_v1', {
+    const rows = await rpc('menvic_accessibility_get_state_v2', {
       p_project_slug: PROJECT_SLUG,
       p_pin: sessionPin,
     })
@@ -385,11 +402,12 @@ export default function AccessibilityChecklistV2() {
     setSavingId(id)
     setError('')
     try {
-      const result = await rpc('menvic_accessibility_update_check_v1', {
+      const result = await rpc('menvic_accessibility_update_check_v2', {
         p_project_slug: PROJECT_SLUG,
         p_pin: pin,
         p_check_id: id,
-        p_status: next.status,
+        p_reviewed: Boolean(next.reviewed),
+        p_status: next.status || 'pending',
         p_responsible: next.responsible || null,
         p_note: next.note || '',
         p_actor: actor,
@@ -451,22 +469,24 @@ export default function AccessibilityChecklistV2() {
     })
   }
 
-  const reviewedCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.status !== 'pending').length, [checkState])
-  const doneCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.status === 'done').length, [checkState])
+  const reviewedCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true).length, [checkState])
+  const doneCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'done').length, [checkState])
+  const failCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'fail').length, [checkState])
+  const naCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'na').length, [checkState])
   const pendingCount = allItems.length - reviewedCount
   const percent = Math.round((reviewedCount / allItems.length) * 100)
 
   const visibleItemIds = useMemo(() => new Set(allItems.filter((item) => {
-    const status = checkState[item.id]?.status || 'pending'
-    if (filter === 'pending') return status === 'pending'
-    if (filter === 'reviewed') return status !== 'pending'
+    const reviewed = checkState[item.id]?.reviewed === true
+    if (filter === 'pending') return !reviewed
+    if (filter === 'reviewed') return reviewed
     if (filter === 'notes') return Boolean(checkState[item.id]?.note?.trim())
     return true
   }).map((item) => item.id)), [checkState, filter])
 
   const copyPending = async () => {
     const lines = allItems
-      .filter((item) => checkState[item.id]?.status === 'pending')
+      .filter((item) => checkState[item.id]?.reviewed !== true)
       .map((item) => `☐ ${item.title}${checkState[item.id]?.responsible ? ` — ${checkState[item.id].responsible}` : ''}${checkState[item.id]?.note ? ` — ${checkState[item.id].note}` : ''}`)
     await navigator.clipboard.writeText(`PENDIENTES · ${projectName}\n\n${lines.join('\n')}`)
     setSyncMessage('Pendientes copiados')
@@ -624,7 +644,7 @@ export default function AccessibilityChecklistV2() {
             <div><span>Progreso general</span><strong>{reviewedCount} de {allItems.length}</strong></div>
             <b>{percent}%</b>
             <div className="access-progress"><i style={{ width: `${percent}%` }} /></div>
-            <small>{doneCount} cumplen · {pendingCount} pendientes</small>
+            <small>{doneCount} cumplen · {failCount} no cumplen · {naCount} N/A · {pendingCount} pendientes</small>
           </div>
           <div className="access-summary-card">
             <span>Revisando como</span>
@@ -680,24 +700,32 @@ export default function AccessibilityChecklistV2() {
                 <h2>{section.title}</h2>
                 {visibleItems.map(([id, title, detail, source]) => {
                   const state = checkState[id] || defaultCheckState(id)
-                  const isDone = state.status === 'done'
-                  const isNa = state.status === 'na'
+                  const isReviewed = state.reviewed === true
+                  const isDone = isReviewed && state.status === 'done'
+                  const isFail = isReviewed && state.status === 'fail'
+                  const isNa = isReviewed && state.status === 'na'
                   const isExpanded = expanded === id
                   const hasNote = Boolean(state.note?.trim())
+                  const rowStyle = isFail ? { background: '#fff7f7' } : undefined
                   return (
-                    <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''}`} key={id}>
+                    <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''}`} style={rowStyle} key={id}>
                       <div className="access-row">
                         <button
                           type="button"
                           className="access-check-button"
-                          aria-label={isDone ? `Marcar ${title} como pendiente` : `Marcar ${title} como cumple`}
-                          onClick={() => updateCheck(id, {
-                            status: isDone ? 'pending' : 'done',
-                            responsible: !isDone && !state.responsible ? actor : state.responsible,
-                          })}
+                          style={isReviewed ? { color: 'var(--access-green)' } : undefined}
+                          aria-label={isReviewed ? `Marcar ${title} como no revisado` : `Marcar ${title} como revisado`}
+                          onClick={() => {
+                            const nextReviewed = !isReviewed
+                            updateCheck(id, {
+                              reviewed: nextReviewed,
+                              status: nextReviewed ? state.status : 'pending',
+                              responsible: nextReviewed && !state.responsible ? actor : state.responsible,
+                            })
+                          }}
                           disabled={savingId === id}
                         >
-                          {isDone ? (
+                          {isReviewed ? (
                             <SquareCheckBig size={24} strokeWidth={2.2} aria-hidden="true" />
                           ) : (
                             <Square size={24} strokeWidth={1.9} aria-hidden="true" />
@@ -723,8 +751,25 @@ export default function AccessibilityChecklistV2() {
                         </select>
 
                         <div className="access-status-cell">
-                          <span className={`access-status ${state.status}`}>{isDone ? 'Cumple' : isNa ? 'No aplica' : 'Pendiente'}</span>
-                          <button type="button" className="access-na-button" onClick={() => updateCheck(id, { status: isNa ? 'pending' : 'na' })}>{isNa ? 'Reactivar' : 'N/A'}</button>
+                          <select
+                            value={state.status || 'pending'}
+                            onChange={(event) => {
+                              const nextStatus = event.target.value
+                              updateCheck(id, {
+                                status: nextStatus,
+                                reviewed: nextStatus === 'pending' ? isReviewed : true,
+                                responsible: nextStatus !== 'pending' && !state.responsible ? actor : state.responsible,
+                              })
+                            }}
+                            disabled={savingId === id}
+                            aria-label={`Estado de ${title}`}
+                            style={statusStyle(state.status, isReviewed)}
+                          >
+                            <option value="pending">— Sin definir —</option>
+                            <option value="done">Cumple</option>
+                            <option value="fail">No cumple</option>
+                            <option value="na">N/A</option>
+                          </select>
                         </div>
 
                         <div className="access-date-cell">
