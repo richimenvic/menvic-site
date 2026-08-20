@@ -208,6 +208,17 @@ export const sections = [
   },
 ]
 
+sections.forEach((section, sectionIndex) => {
+  const sectionNumber = sectionIndex + 1
+  section.title = `${sectionNumber}. ${section.title}`
+  section.items = section.items.map(([id, title, detail, source], itemIndex) => [
+    id,
+    `${sectionNumber}.${itemIndex + 1} ${title}`,
+    detail,
+    source,
+  ])
+})
+
 export const allItems = sections.flatMap((section) =>
   section.items.map(([id, title, detail, source]) => ({
     id,
