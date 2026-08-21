@@ -1,5 +1,7 @@
 import { printAccessibilityReport as printBaseReport } from './accessibilityReportBase'
 
+const REPORT_ISSUE = 'ISSUE 003'
+
 function escText(value) {
   return String(value ?? '').replace(/[<>]/g, '')
 }
@@ -166,6 +168,12 @@ export async function printAccessibilityReport(options) {
     projectLine.replaceChildren(projectName)
   }
 
+  const reportDate = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date()).toUpperCase()
+
   const style = document.createElement('style')
 
   style.textContent = `
@@ -212,9 +220,12 @@ export async function printAccessibilityReport(options) {
       border-spacing: 0;
     }
 
-    .report-print-layout > thead,
+    .report-print-layout > thead {
+      display: table-header-group;
+    }
+
     .report-print-layout > tfoot {
-      display: none;
+      display: table-footer-group;
     }
 
     .report-print-layout td {
@@ -222,9 +233,228 @@ export async function printAccessibilityReport(options) {
       border: 0;
     }
 
-    .report-menvic-header,
+    .report-menvic-header {
+      display: block;
+      margin: 0 12mm;
+      padding: 4mm 0 2.5mm;
+      box-sizing: border-box;
+      background: #fff;
+      color: #172033;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .report-menvic-header-main {
+      display: grid;
+      grid-template-columns: 32mm minmax(0, 1fr) 60mm;
+      align-items: center;
+      gap: 5mm;
+      min-height: 18mm;
+      padding-bottom: 2.5mm;
+      border-bottom: 0.3mm solid #cbd3dc;
+    }
+
+    .report-menvic-header-logo {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .report-menvic-header-logo img {
+      display: block;
+      width: 30mm !important;
+      max-width: 100%;
+      height: auto !important;
+      margin: 0 !important;
+    }
+
+    .report-menvic-header-text {
+      min-width: 0;
+    }
+
+    .report-menvic-header-title,
+    .report-menvic-header-title-en,
+    .report-menvic-header-project,
+    .report-menvic-header-project-en {
+      display: block;
+    }
+
+    .report-menvic-header-title {
+      font-size: 9pt;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: 0.15px;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-header-title-en {
+      margin-top: 0.35mm;
+      font-size: 6.2pt;
+      line-height: 1.05;
+      color: #536174;
+      font-weight: 600;
+      letter-spacing: 0.15px;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-header-project {
+      margin-top: 1.2mm;
+      font-size: 7.4pt;
+      line-height: 1.1;
+      color: #273548;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-header-project-en {
+      margin-top: 0.25mm;
+      font-size: 5.8pt;
+      line-height: 1.05;
+      color: #687586;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-header-meta {
+      min-width: 0;
+      border-top: 0.2mm solid #d8dee6;
+    }
+
+    .report-menvic-meta-row {
+      display: grid;
+      grid-template-columns: 20mm minmax(0, 1fr);
+      align-items: center;
+      min-height: 4.2mm;
+      border-bottom: 0.2mm solid #d8dee6;
+    }
+
+    .report-menvic-meta-label {
+      padding-right: 2mm;
+      font-size: 5.1pt;
+      line-height: 1.05;
+      color: #7a8493;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-meta-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 5.9pt;
+      line-height: 1.05;
+      color: #2f3e50;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-report-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34mm;
+      min-height: 8mm;
+      margin-top: 2.2mm;
+      color: #fff;
+    }
+
+    .report-menvic-report-name {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.3mm 3mm 1.1mm;
+      background: #5b6d7e;
+      border-left: 2.2mm solid #167a4f;
+    }
+
+    .report-menvic-report-name span {
+      font-size: 7pt;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: 0.15px;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-report-name small {
+      margin-top: 0.45mm;
+      font-size: 5.4pt;
+      line-height: 1;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+      opacity: 0.92;
+      text-transform: uppercase;
+    }
+
+    .report-menvic-report-issue {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1mm 2mm;
+      background: #167a4f;
+      text-align: center;
+    }
+
+    .report-menvic-report-issue span {
+      font-size: 4.9pt;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.12px;
+      text-transform: uppercase;
+      opacity: 0.88;
+    }
+
+    .report-menvic-report-issue strong {
+      margin-top: 0.6mm;
+      font-size: 8.2pt;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
     .report-menvic-footer {
-      display: none;
+      display: flex;
+      height: 12mm;
+      margin: 0 12mm;
+      padding: 2.5mm 0 4mm;
+      box-sizing: border-box;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 10mm;
+      border-top: 0.3mm solid #b8c1cc;
+      background: #fff;
+      color: #536174;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .report-menvic-footer-group {
+      min-width: 0;
+    }
+
+    .report-menvic-footer-group:last-child {
+      text-align: right;
+    }
+
+    .report-menvic-footer-es,
+    .report-menvic-footer-en {
+      display: block;
+    }
+
+    .report-menvic-footer-es {
+      font-size: 7pt;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .report-menvic-footer-en {
+      margin-top: 0.2mm;
+      font-size: 6pt;
+      line-height: 1.05;
+      color: #7a8493;
+      font-weight: 500;
+    }
+
+    .page > header {
+      display: none !important;
     }
 
     @page {
@@ -266,112 +496,11 @@ export async function printAccessibilityReport(options) {
       }
 
       .report-menvic-header {
-        display: flex !important;
-        height: 20mm;
-        margin: 0 12mm;
-        padding: 4mm 0 2mm;
-        box-sizing: border-box;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 8mm;
-        border-bottom: 0.45mm solid #167a4f;
-        background: #fff;
-        color: #172033;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
-      .report-menvic-header-text {
-        min-width: 0;
-      }
-
-      .report-menvic-header-title,
-      .report-menvic-header-title-en,
-      .report-menvic-header-project,
-      .report-menvic-header-project-en {
-        display: block;
-      }
-
-      .report-menvic-header-title {
-        font-size: 11pt;
-        line-height: 1.05;
-        font-weight: 800;
-      }
-
-      .report-menvic-header-title-en {
-        margin-top: 0.25mm;
-        font-size: 6.5pt;
-        line-height: 1.05;
-        color: #536174;
-        font-weight: 500;
-      }
-
-      .report-menvic-header-project {
-        margin-top: 0.8mm;
-        font-size: 7pt;
-        line-height: 1.1;
-        color: #374151;
-        font-weight: 700;
-      }
-
-      .report-menvic-header-project-en {
-        margin-top: 0.15mm;
-        font-size: 6pt;
-        line-height: 1.05;
-        color: #667085;
-        font-weight: 500;
-      }
-
-      .report-menvic-header img {
-        width: 22mm !important;
-        height: auto !important;
-        flex: 0 0 auto;
-        margin: 0 !important;
+        display: block !important;
       }
 
       .report-menvic-footer {
         display: flex !important;
-        height: 12mm;
-        margin: 0 12mm;
-        padding: 2.5mm 0 4mm;
-        box-sizing: border-box;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 10mm;
-        border-top: 0.3mm solid #b8c1cc;
-        background: #fff;
-        color: #536174;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
-      .report-menvic-footer-group {
-        min-width: 0;
-      }
-
-      .report-menvic-footer-group:last-child {
-        text-align: right;
-      }
-
-      .report-menvic-footer-es,
-      .report-menvic-footer-en {
-        display: block;
-      }
-
-      .report-menvic-footer-es {
-        font-size: 7pt;
-        line-height: 1.05;
-        font-weight: 700;
-      }
-
-      .report-menvic-footer-en {
-        margin-top: 0.2mm;
-        font-size: 6pt;
-        line-height: 1.05;
-        color: #7a8493;
-        font-weight: 500;
-      }
-
-      .page > header {
-        display: none !important;
       }
 
       .page {
@@ -529,16 +658,48 @@ export async function printAccessibilityReport(options) {
   const runningHeader = document.createElement('div')
   runningHeader.className = 'report-menvic-header'
   runningHeader.innerHTML = `
-    <div class="report-menvic-header-text">
-      <span class="report-menvic-header-title">Revisión de Accesibilidad</span>
-      <span class="report-menvic-header-title-en">Accessibility Review</span>
-      <span class="report-menvic-header-project">${escText(options.projectName)}</span>
-      <span class="report-menvic-header-project-en">Ancillary Building – La Paz</span>
+    <div class="report-menvic-header-main">
+      <div class="report-menvic-header-logo">
+        <img
+          src="${window.location.origin}/img/brand/menvic-logo.png"
+          alt="MENVIC Arquitectura"
+        >
+      </div>
+      <div class="report-menvic-header-text">
+        <span class="report-menvic-header-title">Revisión de Accesibilidad</span>
+        <span class="report-menvic-header-title-en">Accessibility Review</span>
+        <span class="report-menvic-header-project">${escText(options.projectName)}</span>
+        <span class="report-menvic-header-project-en">Ancillary Building – La Paz</span>
+      </div>
+      <div class="report-menvic-header-meta">
+        <div class="report-menvic-meta-row">
+          <span class="report-menvic-meta-label">Proyecto / Project</span>
+          <span class="report-menvic-meta-value">${escText(options.projectName)}</span>
+        </div>
+        <div class="report-menvic-meta-row">
+          <span class="report-menvic-meta-label">Ubicación / Location</span>
+          <span class="report-menvic-meta-value">La Paz · Bolivia</span>
+        </div>
+        <div class="report-menvic-meta-row">
+          <span class="report-menvic-meta-label">Fecha / Date</span>
+          <span class="report-menvic-meta-value">${reportDate}</span>
+        </div>
+        <div class="report-menvic-meta-row">
+          <span class="report-menvic-meta-label">Informe / Report</span>
+          <span class="report-menvic-meta-value">${REPORT_ISSUE}</span>
+        </div>
+      </div>
     </div>
-    <img
-      src="${window.location.origin}/img/brand/menvic-logo.png"
-      alt="MENVIC Arquitectura"
-    >
+    <div class="report-menvic-report-band">
+      <div class="report-menvic-report-name">
+        <span>Informe de Revisión de Accesibilidad</span>
+        <small>Accessibility Review Report</small>
+      </div>
+      <div class="report-menvic-report-issue">
+        <span>Informe / Report</span>
+        <strong>${REPORT_ISSUE}</strong>
+      </div>
+    </div>
   `
 
   headCell.appendChild(runningHeader)
@@ -567,8 +728,8 @@ export async function printAccessibilityReport(options) {
       <span class="report-menvic-footer-en">MENVIC Architecture · Ancillary Building – La Paz</span>
     </div>
     <div class="report-menvic-footer-group">
-      <span class="report-menvic-footer-es">Revisión de Accesibilidad</span>
-      <span class="report-menvic-footer-en">Accessibility Review</span>
+      <span class="report-menvic-footer-es">Revisión de Accesibilidad · ${REPORT_ISSUE}</span>
+      <span class="report-menvic-footer-en">Accessibility Review · ${REPORT_ISSUE}</span>
     </div>
   `
 
