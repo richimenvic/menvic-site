@@ -269,7 +269,7 @@ export async function printAccessibilityReport(options) {
         display: flex !important;
         height: 20mm;
         margin: 0 12mm;
-        padding: 5mm 0 2.5mm;
+        padding: 4mm 0 2mm;
         box-sizing: border-box;
         align-items: flex-start;
         justify-content: space-between;
@@ -284,20 +284,41 @@ export async function printAccessibilityReport(options) {
         min-width: 0;
       }
 
-      .report-menvic-header-title {
+      .report-menvic-header-title,
+      .report-menvic-header-title-en,
+      .report-menvic-header-project,
+      .report-menvic-header-project-en {
         display: block;
-        font-size: 12pt;
-        line-height: 1.15;
+      }
+
+      .report-menvic-header-title {
+        font-size: 11pt;
+        line-height: 1.05;
         font-weight: 800;
       }
 
-      .report-menvic-header-project {
-        display: block;
-        margin-top: 1mm;
-        font-size: 7.5pt;
-        line-height: 1.2;
+      .report-menvic-header-title-en {
+        margin-top: 0.25mm;
+        font-size: 6.5pt;
+        line-height: 1.05;
         color: #536174;
-        font-weight: 600;
+        font-weight: 500;
+      }
+
+      .report-menvic-header-project {
+        margin-top: 0.8mm;
+        font-size: 7pt;
+        line-height: 1.1;
+        color: #374151;
+        font-weight: 700;
+      }
+
+      .report-menvic-header-project-en {
+        margin-top: 0.15mm;
+        font-size: 6pt;
+        line-height: 1.05;
+        color: #667085;
+        font-weight: 500;
       }
 
       .report-menvic-header img {
@@ -319,11 +340,34 @@ export async function printAccessibilityReport(options) {
         border-top: 0.3mm solid #b8c1cc;
         background: #fff;
         color: #536174;
-        font: 700 8pt/1.2 Arial, Helvetica, sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
       }
 
-      .report-menvic-footer span:last-child {
+      .report-menvic-footer-group {
+        min-width: 0;
+      }
+
+      .report-menvic-footer-group:last-child {
         text-align: right;
+      }
+
+      .report-menvic-footer-es,
+      .report-menvic-footer-en {
+        display: block;
+      }
+
+      .report-menvic-footer-es {
+        font-size: 7pt;
+        line-height: 1.05;
+        font-weight: 700;
+      }
+
+      .report-menvic-footer-en {
+        margin-top: 0.2mm;
+        font-size: 6pt;
+        line-height: 1.05;
+        color: #7a8493;
+        font-weight: 500;
       }
 
       .page > header {
@@ -487,7 +531,9 @@ export async function printAccessibilityReport(options) {
   runningHeader.innerHTML = `
     <div class="report-menvic-header-text">
       <span class="report-menvic-header-title">Revisión de Accesibilidad</span>
+      <span class="report-menvic-header-title-en">Accessibility Review</span>
       <span class="report-menvic-header-project">${escText(options.projectName)}</span>
+      <span class="report-menvic-header-project-en">Ancillary Building – La Paz</span>
     </div>
     <img
       src="${window.location.origin}/img/brand/menvic-logo.png"
@@ -516,8 +562,14 @@ export async function printAccessibilityReport(options) {
   const footer = document.createElement('div')
   footer.className = 'report-menvic-footer'
   footer.innerHTML = `
-    <span>MENVIC Arquitectura · ${escText(options.projectName)}</span>
-    <span>Revisión de Accesibilidad</span>
+    <div class="report-menvic-footer-group">
+      <span class="report-menvic-footer-es">MENVIC Arquitectura · ${escText(options.projectName)}</span>
+      <span class="report-menvic-footer-en">MENVIC Architecture · Ancillary Building – La Paz</span>
+    </div>
+    <div class="report-menvic-footer-group">
+      <span class="report-menvic-footer-es">Revisión de Accesibilidad</span>
+      <span class="report-menvic-footer-en">Accessibility Review</span>
+    </div>
   `
 
   footCell.appendChild(footer)
