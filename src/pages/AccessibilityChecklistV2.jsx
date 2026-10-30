@@ -17,6 +17,14 @@ const SUPABASE_URL = 'https://ttnzobxsdeoazhqtiayw.supabase.co'
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-UpgvMJTFdY4R7bRNUcVvg_1v2rqdXk'
 const PROJECT_SLUG = 'edificio-auxiliar-la-paz'
 const ACTORS = ['Ricardo', 'Javier']
+const MHTN_STATUS_LABELS = {
+  question: 'Consulta',
+  review: 'Revisión MHTN',
+  verify: 'Verificación',
+  proceed: 'Proceder',
+  action: 'Acción solicitada',
+  conditional: 'Proceder condicionado',
+}
 const REALTIME_URL = `${SUPABASE_URL.replace(/^http/, 'ws')}/realtime/v1/websocket`
 const PRESENCE_TOPIC = `realtime:menvic-accessibility:${PROJECT_SLUG}`
 const CHATGPT_OBSERVATIONS_PROMPT = [
@@ -152,6 +160,8 @@ export default function AccessibilityChecklistV2() {
   const [pin, setPin] = useState('')
   const [projectName, setProjectName] = useState('Edificio Auxiliar – La Paz')
   const [checkState, setCheckState] = useState(() => Object.fromEntries(allItems.map((item) => [item.id, defaultCheckState(item.id)])))
+  const [mhtnById, setMhtnById] = useState({})
+  const [mhtnError, setMhtnError] = useState('')
   const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState('')
   const [busy, setBusy] = useState(false)
@@ -181,6 +191,21 @@ export default function AccessibilityChecklistV2() {
     setSyncMessage(`Sincronizado ${new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit' }).format(new Date())}`)
   }, [hydrateState, pin])
 
+  const loadMhtn = useCallback(async (sessionPin) => {
+    try {
+      const comments = await rpc('menvic_accessibility_get_mhtn_v1', {
+        p_project_slug: PROJECT_SLUG,
+        p_pin: sessionPin,
+      })
+      if (!Array.isArray(comments)) throw new Error('Respuesta MHTN no válida.')
+      setMhtnById(Object.fromEntries(comments.map((row) => [row.check_id, row])))
+      setMhtnError('')
+    } catch {
+      setMhtnById({})
+      setMhtnError('Los comentarios MHTN no están disponibles. Verificar la instalación de la base de datos.')
+    }
+  }, [])
+
   const login = useCallback(async (selectedActor, enteredPin) => {
     setBusy(true)
     setError('')
@@ -196,6 +221,7 @@ export default function AccessibilityChecklistV2() {
       sessionStorage.setItem('menvic-accessibility-pin', enteredPin)
       sessionStorage.setItem('menvic-accessibility-session', '1')
       await loadState(enteredPin)
+      await loadMhtn(enteredPin)
     } catch (loginError) {
       setError(loginError.message)
       sessionStorage.removeItem('menvic-accessibility-pin')
@@ -203,7 +229,7 @@ export default function AccessibilityChecklistV2() {
     } finally {
       setBusy(false)
     }
-  }, [loadState])
+  }, [loadState, loadMhtn])
 
   useEffect(() => {
     const robots = document.querySelector('meta[name="robots"]') || document.head.appendChild(document.createElement('meta'))
@@ -451,6 +477,8 @@ export default function AccessibilityChecklistV2() {
     sessionStorage.removeItem('menvic-accessibility-session')
     setActor('')
     setPin('')
+    setMhtnById({})
+    setMhtnError('')
     setError('')
   }
 
@@ -709,10 +737,11 @@ export default function AccessibilityChecklistV2() {
         </div>
 
         {error && <div className="access-error-banner" role="alert">{error}</div>}
+        {mhtnError && <div className="access-error-banner" role="status">{mhtnError}</div>}
 
         <div className="access-list" aria-label="Checklist de accesibilidad">
           <div className="access-list-head">
-            <span>Punto a revisar</span><span>Responsable</span><span>Estado</span><span>Último cambio</span>
+            <span>Punto a revisar</span><span>Responsable</span><span>Estado</span><span>MHTN</span><span>Último cambio</span>
           </div>
 
           {sections.map((section) => {
@@ -729,6 +758,7 @@ export default function AccessibilityChecklistV2() {
                   const isNa = isReviewed && state.status === 'na'
                   const isExpanded = expanded === id
                   const hasNote = Boolean(state.note?.trim())
+                  const mhtn = mhtnById[id]
                   const rowStyle = isFail ? { background: '#fff7f7' } : undefined
                   return (
                     <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''}`} style={rowStyle} key={id}>
@@ -795,6 +825,20 @@ export default function AccessibilityChecklistV2() {
                           </select>
                         </div>
 
+                        <div className="access-mhtn-cell">
+                          {mhtn ? (
+                            <button
+                              type="button"
+                              className={`access-mhtn-button is-${mhtn.status_code}`}
+                              onClick={(event) => toggleDetail(id, event)}
+                              aria-label={`Ver comentario de MHTN para ${title}: ${MHTN_STATUS_LABELS[mhtn.status_code] || 'Comentario'}`}
+                              aria-expanded={isExpanded}
+                            >
+                              {MHTN_STATUS_LABELS[mhtn.status_code] || 'Comentario'}
+                            </button>
+                          ) : <span className="access-mhtn-empty">—</span>}
+                        </div>
+
                         <div className="access-date-cell">
                           <span>{formatDate(state.updated_at)}</span>
                           {state.updated_by && <small>{state.updated_by}</small>}
@@ -807,6 +851,8 @@ export default function AccessibilityChecklistV2() {
                           detail={detail}
                           source={source}
                           initialNote={state.note || ''}
+                          mhtn={mhtn}
+                          mhtnLabel={mhtn ? MHTN_STATUS_LABELS[mhtn.status_code] : ''}
                           pin={pin}
                           actor={actor}
                           onDraftNote={(note) => setCheckState((current) => ({ ...current, [id]: { ...current[id], note } }))}
@@ -823,6 +869,15 @@ export default function AccessibilityChecklistV2() {
             )
           })}
         </div>
+
+        {mhtnById.__general__ && (
+          <section className="access-mhtn-general" aria-label="Comentario general de MHTN">
+            <h2>MHTN · Alcance del Templo</h2>
+            <p>{mhtnById.__general__.comment_es}</p>
+            <p lang="en">{mhtnById.__general__.comment_en}</p>
+            <small>Consulta pendiente de respuesta. No constituye una modificación contractual aprobada.</small>
+          </section>
+        )}
 
         <footer className="access-tool-footer">
           <span>Fuente de revisión: Ley Autónoma Nº 80-14 · Textos Ordenados · Anexo VII.</span>

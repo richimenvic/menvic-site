@@ -18,6 +18,8 @@ export default function AccessibilityReviewDetail({
   detail,
   source,
   initialNote,
+  mhtn,
+  mhtnLabel,
   pin,
   actor,
   onDraftNote,
@@ -159,6 +161,18 @@ export default function AccessibilityReviewDetail({
       </div>
 
       <div className="access-review-panel">
+        {mhtn && (
+          <section className="access-mhtn-detail" aria-label="Respuesta de MHTN">
+            <div className="access-mhtn-detail-heading">
+              <strong>Respuesta de MHTN</strong>
+              <span>{mhtnLabel}</span>
+            </div>
+            {mhtn.assigned_to && <small>Dirigido a: {mhtn.assigned_to}</small>}
+            <p>{mhtn.comment_es}</p>
+            <p lang="en" className="access-mhtn-original">{mhtn.comment_en}</p>
+            <small>Comentario de coordinación; no acredita por sí mismo la ejecución ni la aprobación contractual.</small>
+          </section>
+        )}
         <label className="access-note-label">
           <span>
             Observación / diferencia encontrada

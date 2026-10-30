@@ -75,3 +75,37 @@ La protección real de datos en esta versión depende de:
 2. RPC con `SECURITY DEFINER` limitado al rol `anon`;
 3. validación del PIN mediante hash en servidor;
 4. validación estricta de actor, responsable y estado dentro del RPC.
+
+
+## Comentarios de MHTN — v1
+
+La columna `MHTN` recoge la respuesta de Matthew al correo
+`Re: La Paz Ancillary Accessibility Audit Report`, separada del estado normativo.
+
+- 45 ítems del checklist tienen comentarios bilingües y etiquetas de coordinación.
+  Una observación general consulta la aplicación al diseño del Templo.
+- Base: `menvic_tools.accessibility_mhtn_comments` (esquema privado, RLS activo),
+  separada de los 106 registros originales `accessibility_check_state`.
+- RPC de lectura: `public.menvic_accessibility_get_mhtn_v1(text,text)`, exige
+  PIN mediante la función de login existente.
+- En la web, los comentarios MHTN son de solo lectura. Las etiquetas
+  «Consulta», «Proceder», etc., no significan ejecución ni aprobación contractual.
+- No se modifican el estado de cumplimiento, las observaciones originales,
+  los responsables, las evidencias ni la generación del informe.
+
+### Implementación y comprobaciones del 30 de octubre de 2026
+
+La tabla y la RPC se aplicaron al proyecto Supabase `ttnzobxsdeoazhqtiayw`
+mediante la CLI vinculada del repositorio privado de `pymenvic-licensing`.
+Se verificaron 46 filas (45 por ítem y una general), los 106 estados
+originales conservados, permiso `EXECUTE` para `anon` sobre la RPC,
+sin acceso directo a la tabla y rechazo de PIN inválido.
+
+El SQL con comentarios del correo se conserva en el repositorio **privado**
+`richimenvic/pymenvic-licensing`, rama
+`docs/menvic-accessibility-mhtn`, archivo
+`docs/menvic-accessibility-mhtn-v1.sql`.
+No incluir ese archivo en el contenido público de `menvic-site`.
+
+La verificación final en navegador de la función con un PIN válido y el
+despliegue GitHub Pages se registran por separado cuando estén confirmados.
