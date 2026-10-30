@@ -109,8 +109,8 @@ BEGIN
   WHERE m.project_slug = p_project_slug
   ORDER BY
     CASE WHEN m.check_id = '__general__' THEN 1 ELSE 0 END,
-    split_part(m.item_number, '.', 1)::integer NULLS LAST,
-    split_part(m.item_number, '.', 2)::integer NULLS LAST;
+    CASE WHEN m.check_id = '__general__' THEN NULL ELSE split_part(m.item_number, '.', 1)::integer END NULLS LAST,
+    CASE WHEN m.check_id = '__general__' THEN NULL ELSE split_part(m.item_number, '.', 2)::integer END NULLS LAST;
 END;
 $function$;
 
