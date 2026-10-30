@@ -6,6 +6,7 @@ import {
   uploadEvidence,
 } from '../accessibilityEvidence'
 import '../accessibility-evidence.css'
+import MhtnResponseEditor from './MhtnResponseEditor'
 
 function formatBytes(value) {
   if (!value) return ''
@@ -20,6 +21,8 @@ export default function AccessibilityReviewDetail({
   initialNote,
   mhtn,
   mhtnLabel,
+  mhtnResponse,
+  onSaveMhtnResponse,
   pin,
   actor,
   onDraftNote,
@@ -172,6 +175,9 @@ export default function AccessibilityReviewDetail({
             <p lang="en" className="access-mhtn-original">{mhtn.comment_en}</p>
             <small>Comentario de coordinación; no acredita por sí mismo la ejecución ni la aprobación contractual.</small>
           </section>
+        )}
+        {mhtn && (
+          <MhtnResponseEditor response={mhtnResponse} onSave={onSaveMhtnResponse} />
         )}
         <label className="access-note-label">
           <span>

@@ -1255,3 +1255,183 @@
   font-weight: 600;
   line-height: 1.45;
 }
+
+
+/* MHTN replies: the reviewed checkbox is display-only, while status remains editable. */
+.access-check-button.is-locked {
+  cursor: default;
+  pointer-events: none;
+}
+
+.access-list-head,
+.access-row {
+  grid-template-columns: minmax(270px, 1fr) 118px 145px 150px 146px 116px;
+}
+
+.access-menvic-cell {
+  min-width: 0;
+}
+
+.access-menvic-reply-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  max-width: 100%;
+  padding: 6px 11px;
+  border: 1px solid #aec5dc;
+  border-radius: 8px;
+  color: #23466c;
+  background: #eef5fd;
+  font: inherit;
+  font-weight: 750;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.access-menvic-reply-button.is-draft {
+  border-color: #e1c489;
+  background: #fff7e8;
+  color: #754a12;
+}
+
+.access-menvic-reply-button.is-ready {
+  border-color: #b2d9bf;
+  background: #ecf8ef;
+  color: #21623c;
+}
+
+.access-menvic-reply-button:hover,
+.access-menvic-reply-button:focus-visible {
+  border-color: #3c6d9c;
+}
+
+.access-menvic-editor {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  border: 1px solid #bdd3e8;
+  border-radius: 11px;
+  background: #f5f9fe;
+}
+
+.access-menvic-editor-heading {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.access-menvic-editor-heading strong {
+  font-size: 13px;
+  color: #224b73;
+}
+
+.access-menvic-editor-heading small,
+.access-menvic-editor > small {
+  font-size: 11px;
+  color: #586d82;
+}
+
+.access-menvic-editor label {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 750;
+  color: #334155;
+}
+
+.access-menvic-editor textarea {
+  width: 100%;
+  min-width: 0;
+  resize: vertical;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #24364d;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.access-menvic-editor textarea:focus-visible,
+.access-menvic-editor select:focus-visible {
+  outline: 2px solid #4787b4;
+  outline-offset: 1px;
+}
+
+.access-menvic-editor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.access-menvic-editor-actions select {
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.access-menvic-editor-actions button {
+  min-height: 37px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: 1px solid #276390;
+  background: #276390;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.access-menvic-editor-actions button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.access-menvic-unsaved {
+  color: #8a5712 !important;
+}
+
+.access-menvic-save-error {
+  color: #a61b1b !important;
+}
+
+.access-menvic-save-success {
+  color: #17603b !important;
+}
+
+@media (max-width: 1180px) and (min-width: 761px) {
+  .access-list-head,
+  .access-row {
+    min-width: 1120px;
+  }
+}
+
+@media (max-width: 760px) {
+  .access-row {
+    grid-template-areas:
+      "point check"
+      "responsible status"
+      "mhtn mhtn"
+      "menvic menvic"
+      "date date";
+  }
+
+  .access-menvic-cell {
+    grid-area: menvic;
+  }
+
+  .access-menvic-editor {
+    padding: 12px;
+  }
+}

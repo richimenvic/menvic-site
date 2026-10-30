@@ -8,6 +8,8 @@ import {
   SquareCheckBig,
 } from 'lucide-react'
 import AccessibilityReviewDetail from '../components/AccessibilityReviewDetail'
+import MhtnResponseEditor from '../components/MhtnResponseEditor'
+import { isMenvicQuestion, printMhtnConsultations } from '../mhtnConsultationPrint'
 import { allItems, sections } from '../accessibilityChecklistData'
 import { printAccessibilityReport } from '../accessibilityReport'
 import '../accessibility-tool.css'
@@ -162,6 +164,9 @@ export default function AccessibilityChecklistV2() {
   const [checkState, setCheckState] = useState(() => Object.fromEntries(allItems.map((item) => [item.id, defaultCheckState(item.id)])))
   const [mhtnById, setMhtnById] = useState({})
   const [mhtnError, setMhtnError] = useState('')
+  const [responsesById, setResponsesById] = useState({})
+  const [responsesError, setResponsesError] = useState('')
+  const [savingResponseId, setSavingResponseId] = useState('')
   const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState('')
   const [busy, setBusy] = useState(false)
@@ -206,6 +211,20 @@ export default function AccessibilityChecklistV2() {
     }
   }, [])
 
+  const loadMhtnResponses = useCallback(async (sessionPin) => {
+    try {
+      const rows = await rpc('menvic_accessibility_get_mhtn_responses_v1', {
+        p_project_slug: PROJECT_SLUG,
+        p_pin: sessionPin,
+      })
+      if (!Array.isArray(rows)) throw new Error('Respuesta MENVIC no válida.')
+      setResponsesById(Object.fromEntries(rows.map((row) => [row.check_id, row])))
+      setResponsesError('')
+    } catch {
+      setResponsesError('No se pudieron cargar las respuestas MENVIC. No edites respuestas hasta resolver la conexión.')
+    }
+  }, [])
+
   const login = useCallback(async (selectedActor, enteredPin) => {
     setBusy(true)
     setError('')
@@ -222,6 +241,7 @@ export default function AccessibilityChecklistV2() {
       sessionStorage.setItem('menvic-accessibility-session', '1')
       await loadState(enteredPin)
       await loadMhtn(enteredPin)
+      await loadMhtnResponses(enteredPin)
     } catch (loginError) {
       setError(loginError.message)
       sessionStorage.removeItem('menvic-accessibility-pin')
@@ -229,7 +249,7 @@ export default function AccessibilityChecklistV2() {
     } finally {
       setBusy(false)
     }
-  }, [loadState, loadMhtn])
+  }, [loadState, loadMhtn, loadMhtnResponses])
 
   useEffect(() => {
     const robots = document.querySelector('meta[name="robots"]') || document.head.appendChild(document.createElement('meta'))
@@ -254,9 +274,10 @@ export default function AccessibilityChecklistV2() {
     if (!actor || !pin) return undefined
     const timer = window.setInterval(() => {
       loadState().catch(() => setSyncMessage('Sin conexión · se reintentará'))
+      loadMhtnResponses(pin).catch(() => {})
     }, 15000)
     return () => window.clearInterval(timer)
-  }, [actor, pin, loadState])
+  }, [actor, pin, loadState, loadMhtnResponses])
 
   useEffect(() => {
     if (!actor || !pin) {
@@ -443,6 +464,32 @@ export default function AccessibilityChecklistV2() {
     return () => narrowViewport.removeEventListener?.('change', onViewportChange)
   }, [])
 
+  const saveMhtnResponse = async (id, payload) => {
+    setSavingResponseId(id)
+    setError('')
+    try {
+      const rows = await rpc('menvic_accessibility_update_mhtn_response_v1', {
+        p_project_slug: PROJECT_SLUG,
+        p_pin: pin,
+        p_check_id: id,
+        p_response_es: payload.response_es,
+        p_response_en: payload.response_en,
+        p_response_status: payload.response_status,
+        p_actor: actor,
+      })
+      if (!rows?.[0]) throw new Error('No se recibió confirmación de guardado.')
+      const saved = rows[0]
+      setResponsesById((current) => ({ ...current, [id]: saved }))
+      setSyncMessage('Respuesta MENVIC guardada')
+      return saved
+    } catch (error) {
+      setError(error.message)
+      throw error
+    } finally {
+      setSavingResponseId('')
+    }
+  }
+
   const updateCheck = async (id, patch) => {
     const current = checkState[id] || defaultCheckState(id)
     const next = { ...current, ...patch }
@@ -479,6 +526,8 @@ export default function AccessibilityChecklistV2() {
     setPin('')
     setMhtnById({})
     setMhtnError('')
+    setResponsesById({})
+    setResponsesError('')
     setError('')
   }
 
@@ -525,6 +574,11 @@ export default function AccessibilityChecklistV2() {
   const naCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'na').length, [checkState])
   const pendingCount = allItems.length - reviewedCount
   const mhtnCount = useMemo(() => allItems.filter((item) => Boolean(mhtnById[item.id])).length, [mhtnById])
+  const mhtnQuestionCount = useMemo(() => allItems.filter((item) => isMenvicQuestion(mhtnById[item.id])).length + (isMenvicQuestion(mhtnById.__general__) ? 1 : 0), [mhtnById])
+  const mhtnActionCount = useMemo(() => allItems.filter((item) => ['verify', 'proceed', 'action', 'conditional'].includes(mhtnById[item.id]?.status_code)).length, [mhtnById])
+  const mhtnAlbertCount = useMemo(() => allItems.filter((item) => mhtnById[item.id]?.status_code === 'review').length, [mhtnById])
+  const mhtnPendingCount = useMemo(() => allItems.filter((item) => isMenvicQuestion(mhtnById[item.id]) && responsesById[item.id]?.response_status !== 'ready').length + (isMenvicQuestion(mhtnById.__general__) && responsesById.__general__?.response_status !== 'ready' ? 1 : 0), [mhtnById, responsesById])
+  const mhtnReadyCount = useMemo(() => allItems.filter((item) => responsesById[item.id]?.response_status === 'ready').length + (isMenvicQuestion(mhtnById.__general__) && responsesById.__general__?.response_status === 'ready' ? 1 : 0), [mhtnById, responsesById])
   const percent = Math.round((reviewedCount / allItems.length) * 100)
 
   const visibleItemIds = useMemo(() => new Set(allItems.filter((item) => {
@@ -532,9 +586,15 @@ export default function AccessibilityChecklistV2() {
     if (filter === 'pending') return !reviewed
     if (filter === 'reviewed') return reviewed
     if (filter === 'notes') return Boolean(checkState[item.id]?.note?.trim())
-    if (filter === 'mhtn') return Boolean(mhtnById[item.id])
+    const comment = mhtnById[item.id]
+    if (filter === 'mhtn') return Boolean(comment)
+    if (filter === 'questions') return isMenvicQuestion(comment)
+    if (filter === 'actions') return ['verify', 'proceed', 'action', 'conditional'].includes(comment?.status_code)
+    if (filter === 'albert') return comment?.status_code === 'review'
+    if (filter === 'unanswered') return isMenvicQuestion(comment) && responsesById[item.id]?.response_status !== 'ready'
+    if (filter === 'ready') return responsesById[item.id]?.response_status === 'ready'
     return true
-  }).map((item) => item.id)), [checkState, filter, mhtnById])
+  }).map((item) => item.id)), [checkState, filter, mhtnById, responsesById])
 
   const copyPending = async () => {
     const lines = allItems
@@ -622,6 +682,23 @@ export default function AccessibilityChecklistV2() {
       setSyncMessage(`${normalized.length} observaciones actualizadas`)
     } catch (importError) {
       setError(importError.message)
+    }
+  }
+
+  const printMenvicQuestions = () => {
+    setError('')
+    try {
+      const count = printMhtnConsultations({
+        projectName,
+        actor,
+        items: allItems,
+        mhtnById,
+        responsesById,
+        onlyPending: filter === 'unanswered',
+      })
+      setSyncMessage(`${count} consultas preparadas para impresión`)
+    } catch (printError) {
+      setError(printError.message)
     }
   }
 
@@ -725,11 +802,25 @@ export default function AccessibilityChecklistV2() {
               ['reviewed', 'Revisados'],
               ['notes', 'Con observación'],
               ['mhtn', `Con comentario MHTN (${mhtnCount})`],
+              ['questions', `Consultas MENVIC (${mhtnQuestionCount})`],
+              ['actions', `Acciones MENVIC (${mhtnActionCount})`],
+              ['albert', `Revisión Albert (${mhtnAlbertCount})`],
+              ['unanswered', `Consultas por responder (${mhtnPendingCount})`],
+              ['ready', `Respuestas listas (${mhtnReadyCount})`],
             ].map(([value, label]) => (
               <button key={value} type="button" className={filter === value ? 'is-active' : ''} onClick={() => setFilter(value)}>{label}</button>
             ))}
           </div>
           <div className="access-toolbar-actions">
+            <button
+              className="access-report-button access-menvic-print-button"
+              type="button"
+              onClick={printMenvicQuestions}
+              disabled={!mhtnQuestionCount}
+              title="Imprime únicamente las consultas dirigidas a MENVIC, con las respuestas guardadas."
+            >
+              {filter === 'unanswered' ? 'Imprimir consultas pendientes' : `Imprimir consultas MENVIC (${mhtnQuestionCount})`}
+            </button>
             <button className="access-report-button" type="button" onClick={generateReport} disabled={reportBusy}>
               {reportBusy ? 'Preparando…' : 'PDF / Imprimir reporte'}
             </button>
@@ -741,15 +832,21 @@ export default function AccessibilityChecklistV2() {
 
         {error && <div className="access-error-banner" role="alert">{error}</div>}
         {mhtnError && <div className="access-error-banner" role="status">{mhtnError}</div>}
+        {responsesError && <div className="access-error-banner" role="status">{responsesError}</div>}
         {filter === 'mhtn' && !mhtnError && (
           <p className="access-filter-feedback" role="status">
             {mhtnCount} {mhtnCount === 1 ? 'punto con comentario' : 'puntos con comentarios'} de MHTN. Pulsa la etiqueta de una fila para leer la respuesta.
           </p>
         )}
 
+        {['questions', 'actions', 'albert', 'unanswered', 'ready'].includes(filter) && (
+          <p className="access-filter-feedback" role="status">
+            {visibleItemIds.size} puntos del checklist en este filtro. {['questions', 'unanswered', 'ready'].includes(filter) && isMenvicQuestion(mhtnById.__general__) ? 'La consulta general sobre el Templo se muestra por separado cuando corresponde.' : ''}
+          </p>
+        )}
         <div className="access-list" aria-label="Checklist de accesibilidad">
           <div className="access-list-head">
-            <span>Punto a revisar</span><span>Responsable</span><span>Estado</span><span>MHTN</span><span>Último cambio</span>
+            <span>Punto a revisar</span><span>Responsable</span><span>Estado</span><span>MHTN</span><span>Respuesta MENVIC</span><span>Último cambio</span>
           </div>
 
           {sections.map((section) => {
@@ -771,27 +868,19 @@ export default function AccessibilityChecklistV2() {
                   return (
                     <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''} ${mhtn ? 'has-mhtn' : ''}`} style={rowStyle} key={id}>
                       <div className="access-row">
-                        <button
-                          type="button"
-                          className="access-check-button"
+                        <span
+                          className="access-check-button is-locked"
                           style={isReviewed ? { color: 'var(--access-green)' } : undefined}
-                          aria-label={isReviewed ? `Marcar ${title} como no revisado` : `Marcar ${title} como revisado`}
-                          onClick={() => {
-                            const nextReviewed = !isReviewed
-                            updateCheck(id, {
-                              reviewed: nextReviewed,
-                              status: nextReviewed ? state.status : 'pending',
-                              responsible: nextReviewed && !state.responsible ? actor : state.responsible,
-                            })
-                          }}
-                          disabled={savingId === id}
+                          title="Casilla de revisión bloqueada; el estado se gestiona por separado."
+                          role="img"
+                          aria-label={isReviewed ? `Revisión registrada de ${title}; casilla bloqueada` : `Revisión pendiente de ${title}; casilla bloqueada`}
                         >
                           {isReviewed ? (
                             <SquareCheckBig size={24} strokeWidth={2.2} aria-hidden="true" />
                           ) : (
                             <Square size={24} strokeWidth={1.9} aria-hidden="true" />
                           )}
-                        </button>
+                        </span>
 
                         <div className="access-point">
                           <span>{title}</span>
@@ -847,6 +936,20 @@ export default function AccessibilityChecklistV2() {
                           ) : <span className="access-mhtn-empty">—</span>}
                         </div>
 
+                        <div className="access-menvic-cell">
+                          {mhtn ? (
+                            <button
+                              type="button"
+                              className={`access-menvic-reply-button ${responsesById[id]?.response_status === 'ready' ? 'is-ready' : responsesById[id]?.response_en || responsesById[id]?.response_es ? 'is-draft' : 'is-empty'}`}
+                              onClick={(event) => toggleDetail(id, event)}
+                              aria-label={`Abrir respuesta MENVIC para ${title}`}
+                              aria-expanded={isExpanded}
+                            >
+                              {savingResponseId === id ? 'Guardando…' : responsesById[id]?.response_status === 'ready' ? 'Lista' : responsesById[id]?.response_en || responsesById[id]?.response_es ? 'Borrador' : 'Responder'}
+                            </button>
+                          ) : <span className="access-mhtn-empty">—</span>}
+                        </div>
+
                         <div className="access-date-cell">
                           <span>{formatDate(state.updated_at)}</span>
                           {state.updated_by && <small>{state.updated_by}</small>}
@@ -861,6 +964,8 @@ export default function AccessibilityChecklistV2() {
                           initialNote={state.note || ''}
                           mhtn={mhtn}
                           mhtnLabel={mhtn ? MHTN_STATUS_LABELS[mhtn.status_code] : ''}
+                          mhtnResponse={responsesById[id]}
+                          onSaveMhtnResponse={(draft) => saveMhtnResponse(id, draft)}
                           pin={pin}
                           actor={actor}
                           onDraftNote={(note) => setCheckState((current) => ({ ...current, [id]: { ...current[id], note } }))}
@@ -879,11 +984,19 @@ export default function AccessibilityChecklistV2() {
         </div>
 
         {mhtnById.__general__ && (
+          ['all', 'mhtn', 'questions'].includes(filter)
+          || (filter === 'unanswered' && responsesById.__general__?.response_status !== 'ready')
+          || (filter === 'ready' && responsesById.__general__?.response_status === 'ready')
+        ) && (
           <section className="access-mhtn-general" aria-label="Comentario general de MHTN">
             <h2>MHTN · Alcance del Templo</h2>
             <p>{mhtnById.__general__.comment_es}</p>
             <p lang="en">{mhtnById.__general__.comment_en}</p>
-            <small>Consulta pendiente de respuesta. No constituye una modificación contractual aprobada.</small>
+            <small>Consulta de coordinación; no constituye una modificación contractual aprobada.</small>
+            <MhtnResponseEditor
+              response={responsesById.__general__}
+              onSave={(draft) => saveMhtnResponse('__general__', draft)}
+            />
           </section>
         )}
 
