@@ -524,6 +524,7 @@ export default function AccessibilityChecklistV2() {
   const failCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'fail').length, [checkState])
   const naCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'na').length, [checkState])
   const pendingCount = allItems.length - reviewedCount
+  const mhtnCount = useMemo(() => allItems.filter((item) => Boolean(mhtnById[item.id])).length, [mhtnById])
   const percent = Math.round((reviewedCount / allItems.length) * 100)
 
   const visibleItemIds = useMemo(() => new Set(allItems.filter((item) => {
@@ -531,8 +532,9 @@ export default function AccessibilityChecklistV2() {
     if (filter === 'pending') return !reviewed
     if (filter === 'reviewed') return reviewed
     if (filter === 'notes') return Boolean(checkState[item.id]?.note?.trim())
+    if (filter === 'mhtn') return Boolean(mhtnById[item.id])
     return true
-  }).map((item) => item.id)), [checkState, filter])
+  }).map((item) => item.id)), [checkState, filter, mhtnById])
 
   const copyPending = async () => {
     const lines = allItems
@@ -722,6 +724,7 @@ export default function AccessibilityChecklistV2() {
               ['pending', 'Pendientes'],
               ['reviewed', 'Revisados'],
               ['notes', 'Con observación'],
+              ['mhtn', `Con comentario MHTN (${mhtnCount})`],
             ].map(([value, label]) => (
               <button key={value} type="button" className={filter === value ? 'is-active' : ''} onClick={() => setFilter(value)}>{label}</button>
             ))}
@@ -738,6 +741,11 @@ export default function AccessibilityChecklistV2() {
 
         {error && <div className="access-error-banner" role="alert">{error}</div>}
         {mhtnError && <div className="access-error-banner" role="status">{mhtnError}</div>}
+        {filter === 'mhtn' && !mhtnError && (
+          <p className="access-filter-feedback" role="status">
+            {mhtnCount} {mhtnCount === 1 ? 'punto con comentario' : 'puntos con comentarios'} de MHTN. Pulsa la etiqueta de una fila para leer la respuesta.
+          </p>
+        )}
 
         <div className="access-list" aria-label="Checklist de accesibilidad">
           <div className="access-list-head">
@@ -761,7 +769,7 @@ export default function AccessibilityChecklistV2() {
                   const mhtn = mhtnById[id]
                   const rowStyle = isFail ? { background: '#fff7f7' } : undefined
                   return (
-                    <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''}`} style={rowStyle} key={id}>
+                    <div className={`access-row-wrap ${isDone ? 'is-done' : ''} ${isNa ? 'is-na' : ''} ${hasNote ? 'has-note' : ''} ${mhtn ? 'has-mhtn' : ''}`} style={rowStyle} key={id}>
                       <div className="access-row">
                         <button
                           type="button"

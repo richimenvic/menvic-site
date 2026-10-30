@@ -1240,3 +1240,18 @@
     padding: 15px;
   }
 }
+
+
+/* Visibilidad de comentarios MHTN sin alterar el estado de cumplimiento. */
+.access-row-wrap.has-mhtn {
+  box-shadow: inset 3px 0 0 #7894b3;
+}
+
+.access-filter-feedback {
+  margin: 0 0 12px;
+  padding: 0 2px;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}

@@ -88,6 +88,7 @@ La columna `MHTN` recoge la respuesta de Matthew al correo
   separada de los 106 registros originales `accessibility_check_state`.
 - RPC de lectura: `public.menvic_accessibility_get_mhtn_v1(text,text)`, exige
   PIN mediante la función de login existente.
+- La barra de filtros incorpora **«Con comentario MHTN (n)»** y muestra solo los puntos con respuesta de MHTN; el contador se calcula a partir de los comentarios recibidos. Las filas afectadas presentan una marca lateral discreta.
 - En la web, los comentarios MHTN son de solo lectura. Las etiquetas
   «Consulta», «Proceder», etc., no significan ejecución ni aprobación contractual.
 - No se modifican el estado de cumplimiento, las observaciones originales,
