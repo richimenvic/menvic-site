@@ -77,42 +77,35 @@ La protección real de datos en esta versión depende de:
 4. validación estricta de actor, responsable y estado dentro del RPC.
 
 
-## Comentarios de MHTN — propuesta v1 (pendiente de instalación)
+## Comentarios de MHTN — v1
 
-Para la respuesta de Matthew al correo `Re: La Paz Ancillary Accessibility Audit Report`,
-se ha preparado una columna `MHTN` en la vista del checklist.
+La columna `MHTN` recoge la respuesta de Matthew al correo
+`Re: La Paz Ancillary Accessibility Audit Report`, separada del estado normativo.
 
-- Los comentarios de MHTN se guardan por `check_id` estable en
-  `menvic_tools.accessibility_mhtn_comments`, separados de
-  `menvic_tools.accessibility_check_state`.
-- Se incluyen 45 comentarios por ítem y una observación general sobre
-  la posible aplicación de requisitos al edificio del Templo.
-- El registro guarda la referencia numérica visible, una categoría orientativa
-  de coordinación, la persona mencionada, el comentario en inglés del correo
-  (con las menciones personales separadas en su propio campo) y la traducción
-  al español. Las categorías no significan conformidad ni aprobación contractual.
-- La interfaz muestra una etiqueta en la columna y ambos idiomas al abrir
-  el detalle del punto. La consulta general aparece bajo el checklist.
-- Los nuevos comentarios son de solo lectura desde la web.
-  La importación y las modificaciones posteriores requieren gestión administrativa.
-- La funcionalidad no cambia los estados, observaciones, responsables,
-  evidencias ni datos de cumplimiento existentes. No modifica el PDF del informe.
+- 45 ítems del checklist tienen comentarios bilingües y etiquetas de coordinación.
+  Una observación general consulta la aplicación al diseño del Templo.
+- Base: `menvic_tools.accessibility_mhtn_comments` (esquema privado, RLS activo),
+  separada de los 106 registros originales `accessibility_check_state`.
+- RPC de lectura: `public.menvic_accessibility_get_mhtn_v1(text,text)`, exige
+  PIN mediante la función de login existente.
+- En la web, los comentarios MHTN son de solo lectura. Las etiquetas
+  «Consulta», «Proceder», etc., no significan ejecución ni aprobación contractual.
+- No se modifican el estado de cumplimiento, las observaciones originales,
+  los responsables, las evidencias ni la generación del informe.
 
-### Instalación y validación pendiente
+### Implementación y comprobaciones del 30 de octubre de 2026
 
-El archivo `docs/sql/accessibility-mhtn-comments-v1.sql` contiene la
-creación de la tabla privada, la carga inicial y la nueva RPC de lectura
-`public.menvic_accessibility_get_mhtn_v1`.
+La tabla y la RPC se aplicaron al proyecto Supabase `ttnzobxsdeoazhqtiayw`
+mediante la CLI vinculada del repositorio privado de `pymenvic-licensing`.
+Se verificaron 46 filas (45 por ítem y una general), los 106 estados
+originales conservados, permiso `EXECUTE` para `anon` sobre la RPC,
+sin acceso directo a la tabla y rechazo de PIN inválido.
 
-**Antes de ejecutar SQL:** confirmar con el administrador de la base
-`ttnzobxsdeoazhqtiayw` que el esquema privado y la firma/comportamiento
-de `public.menvic_accessibility_login_v1(text,text)` coinciden con lo
-documentado. La conexión disponible en esta sesión no tiene permisos sobre
-este proyecto; por tanto, no está verificado en su base real.
+El SQL con comentarios del correo se conserva en el repositorio **privado**
+`richimenvic/pymenvic-licensing`, rama
+`docs/menvic-accessibility-mhtn`, archivo
+`docs/menvic-accessibility-mhtn-v1.sql`.
+No incluir ese archivo en el contenido público de `menvic-site`.
 
-Verificar en un entorno de ensayo: 46 filas para el proyecto, PIN válido,
-PIN inválido (acceso denegado), ausencia de acceso directo del rol `anon`
-a la tabla, visualización de MHTN en escritorio/móvil, y conservación de los
-106 estados originales. Aplicar primero el SQL y después integrar el código
-de la rama en `main` mediante el procedimiento de publicación autorizado.
-No se ha publicado ni aplicado en producción desde esta sesión.
+La verificación final en navegador de la función con un PIN válido y el
+despliegue GitHub Pages se registran por separado cuando estén confirmados.
