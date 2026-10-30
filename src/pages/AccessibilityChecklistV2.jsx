@@ -578,7 +578,7 @@ export default function AccessibilityChecklistV2() {
   const mhtnActionCount = useMemo(() => allItems.filter((item) => ['verify', 'proceed', 'action', 'conditional'].includes(mhtnById[item.id]?.status_code)).length, [mhtnById])
   const mhtnAlbertCount = useMemo(() => allItems.filter((item) => mhtnById[item.id]?.status_code === 'review').length, [mhtnById])
   const mhtnPendingCount = useMemo(() => allItems.filter((item) => isMenvicQuestion(mhtnById[item.id]) && responsesById[item.id]?.response_status !== 'ready').length + (isMenvicQuestion(mhtnById.__general__) && responsesById.__general__?.response_status !== 'ready' ? 1 : 0), [mhtnById, responsesById])
-  const mhtnReadyCount = useMemo(() => allItems.filter((item) => responsesById[item.id]?.response_status === 'ready').length, [responsesById])
+  const mhtnReadyCount = useMemo(() => allItems.filter((item) => responsesById[item.id]?.response_status === 'ready').length + (isMenvicQuestion(mhtnById.__general__) && responsesById.__general__?.response_status === 'ready' ? 1 : 0), [mhtnById, responsesById])
   const percent = Math.round((reviewedCount / allItems.length) * 100)
 
   const visibleItemIds = useMemo(() => new Set(allItems.filter((item) => {
