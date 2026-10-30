@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import AccessibilityReviewDetail from '../components/AccessibilityReviewDetail'
 import MhtnResponseEditor from '../components/MhtnResponseEditor'
+import { isMenvicQuestion, printMhtnConsultations } from '../mhtnConsultationPrint'
 import { allItems, sections } from '../accessibilityChecklistData'
 import { printAccessibilityReport } from '../accessibilityReport'
 import '../accessibility-tool.css'
@@ -573,10 +574,10 @@ export default function AccessibilityChecklistV2() {
   const naCount = useMemo(() => allItems.filter((item) => checkState[item.id]?.reviewed === true && checkState[item.id]?.status === 'na').length, [checkState])
   const pendingCount = allItems.length - reviewedCount
   const mhtnCount = useMemo(() => allItems.filter((item) => Boolean(mhtnById[item.id])).length, [mhtnById])
-  const mhtnQuestionCount = useMemo(() => allItems.filter((item) => mhtnById[item.id]?.status_code === 'question').length, [mhtnById])
+  const mhtnQuestionCount = useMemo(() => allItems.filter((item) => isMenvicQuestion(mhtnById[item.id])).length + (isMenvicQuestion(mhtnById.__general__) ? 1 : 0), [mhtnById])
   const mhtnActionCount = useMemo(() => allItems.filter((item) => ['verify', 'proceed', 'action', 'conditional'].includes(mhtnById[item.id]?.status_code)).length, [mhtnById])
   const mhtnAlbertCount = useMemo(() => allItems.filter((item) => mhtnById[item.id]?.status_code === 'review').length, [mhtnById])
-  const mhtnPendingCount = useMemo(() => allItems.filter((item) => mhtnById[item.id]?.status_code === 'question' && responsesById[item.id]?.response_status !== 'ready').length, [mhtnById, responsesById])
+  const mhtnPendingCount = useMemo(() => allItems.filter((item) => isMenvicQuestion(mhtnById[item.id]) && responsesById[item.id]?.response_status !== 'ready').length + (isMenvicQuestion(mhtnById.__general__) && responsesById.__general__?.response_status !== 'ready' ? 1 : 0), [mhtnById, responsesById])
   const mhtnReadyCount = useMemo(() => allItems.filter((item) => responsesById[item.id]?.response_status === 'ready').length, [responsesById])
   const percent = Math.round((reviewedCount / allItems.length) * 100)
 
@@ -587,10 +588,10 @@ export default function AccessibilityChecklistV2() {
     if (filter === 'notes') return Boolean(checkState[item.id]?.note?.trim())
     const comment = mhtnById[item.id]
     if (filter === 'mhtn') return Boolean(comment)
-    if (filter === 'questions') return comment?.status_code === 'question'
+    if (filter === 'questions') return isMenvicQuestion(comment)
     if (filter === 'actions') return ['verify', 'proceed', 'action', 'conditional'].includes(comment?.status_code)
     if (filter === 'albert') return comment?.status_code === 'review'
-    if (filter === 'unanswered') return comment?.status_code === 'question' && responsesById[item.id]?.response_status !== 'ready'
+    if (filter === 'unanswered') return isMenvicQuestion(comment) && responsesById[item.id]?.response_status !== 'ready'
     if (filter === 'ready') return responsesById[item.id]?.response_status === 'ready'
     return true
   }).map((item) => item.id)), [checkState, filter, mhtnById, responsesById])
@@ -681,6 +682,23 @@ export default function AccessibilityChecklistV2() {
       setSyncMessage(`${normalized.length} observaciones actualizadas`)
     } catch (importError) {
       setError(importError.message)
+    }
+  }
+
+  const printMenvicQuestions = () => {
+    setError('')
+    try {
+      const count = printMhtnConsultations({
+        projectName,
+        actor,
+        items: allItems,
+        mhtnById,
+        responsesById,
+        onlyPending: filter === 'unanswered',
+      })
+      setSyncMessage(`${count} consultas preparadas para impresión`)
+    } catch (printError) {
+      setError(printError.message)
     }
   }
 
@@ -794,6 +812,15 @@ export default function AccessibilityChecklistV2() {
             ))}
           </div>
           <div className="access-toolbar-actions">
+            <button
+              className="access-report-button access-menvic-print-button"
+              type="button"
+              onClick={printMenvicQuestions}
+              disabled={!mhtnQuestionCount}
+              title="Imprime únicamente las consultas dirigidas a MENVIC, con las respuestas guardadas."
+            >
+              {filter === 'unanswered' ? 'Imprimir consultas pendientes' : `Imprimir consultas MENVIC (${mhtnQuestionCount})`}
+            </button>
             <button className="access-report-button" type="button" onClick={generateReport} disabled={reportBusy}>
               {reportBusy ? 'Preparando…' : 'PDF / Imprimir reporte'}
             </button>
@@ -814,7 +841,7 @@ export default function AccessibilityChecklistV2() {
 
         {['questions', 'actions', 'albert', 'unanswered', 'ready'].includes(filter) && (
           <p className="access-filter-feedback" role="status">
-            {visibleItemIds.size} puntos del checklist en este filtro. La consulta general sobre el Templo aparece por separado cuando corresponde.
+            {visibleItemIds.size} puntos del checklist en este filtro. {['questions', 'unanswered', 'ready'].includes(filter) && isMenvicQuestion(mhtnById.__general__) ? 'La consulta general sobre el Templo se muestra por separado cuando corresponde.' : ''}
           </p>
         )}
         <div className="access-list" aria-label="Checklist de accesibilidad">
