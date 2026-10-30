@@ -1099,3 +1099,144 @@
 }
 
 /* ACCESSIBILITY-INFO-LUCIDE-END */
+
+
+/* MHTN coordination comments — separate from regulatory compliance status. */
+.access-list-head,
+.access-row {
+  grid-template-columns: minmax(300px, 1fr) 130px 160px 158px 130px;
+}
+
+.access-mhtn-cell {
+  min-width: 0;
+}
+
+.access-mhtn-button {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid #ccd5e0;
+  border-radius: 8px;
+  background: #f2f5f9;
+  color: #29415c;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+
+.access-mhtn-button:hover,
+.access-mhtn-button:focus-visible {
+  border-color: #64748b;
+  outline-offset: 2px;
+}
+
+.access-mhtn-button.is-proceed,
+.access-mhtn-button.is-action {
+  background: #edf7f0;
+  border-color: #badfca;
+  color: #175b37;
+}
+
+.access-mhtn-button.is-conditional,
+.access-mhtn-button.is-review,
+.access-mhtn-button.is-verify {
+  background: #fff7e8;
+  border-color: #ebd3a8;
+  color: #85510c;
+}
+
+.access-mhtn-empty {
+  font-size: 12px;
+  color: #7b8795;
+}
+
+.access-mhtn-detail {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #d8e1eb;
+  border-radius: 11px;
+  background: #f7f9fc;
+}
+
+.access-mhtn-detail .access-mhtn-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 8px;
+}
+
+.access-mhtn-detail .access-mhtn-detail-heading strong {
+  margin: 0;
+}
+
+.access-mhtn-detail-heading span {
+  font-size: 12px;
+  font-weight: 750;
+  color: #334155;
+}
+
+.access-mhtn-detail p,
+.access-mhtn-general p {
+  margin: 10px 0 0;
+  line-height: 1.5;
+  color: #263548;
+  overflow-wrap: anywhere;
+}
+
+.access-mhtn-detail .access-mhtn-original,
+.access-mhtn-general p[lang="en"] {
+  border-top: 1px solid #dce3ec;
+  padding-top: 9px;
+  color: #526072;
+}
+
+.access-mhtn-detail small,
+.access-mhtn-general small {
+  display: block;
+  margin-top: 9px;
+  color: #526072;
+  line-height: 1.45;
+}
+
+.access-mhtn-general {
+  padding: 18px 22px;
+  margin-top: 18px;
+  border: 1px solid #d8e1eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.access-mhtn-general h2 {
+  margin: 0;
+  font-size: 15px;
+  color: #24364d;
+}
+
+@media (max-width: 1180px) and (min-width: 761px) {
+  .access-list-head,
+  .access-row {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 760px) {
+  .access-row {
+    grid-template-areas:
+      "point check"
+      "responsible status"
+      "mhtn mhtn"
+      "date date";
+  }
+  .access-mhtn-cell {
+    grid-area: mhtn;
+  }
+  .access-mhtn-general {
+    padding: 15px;
+  }
+}
