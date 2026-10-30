@@ -75,3 +75,44 @@ La protección real de datos en esta versión depende de:
 2. RPC con `SECURITY DEFINER` limitado al rol `anon`;
 3. validación del PIN mediante hash en servidor;
 4. validación estricta de actor, responsable y estado dentro del RPC.
+
+
+## Comentarios de MHTN — propuesta v1 (pendiente de instalación)
+
+Para la respuesta de Matthew al correo `Re: La Paz Ancillary Accessibility Audit Report`,
+se ha preparado una columna `MHTN` en la vista del checklist.
+
+- Los comentarios de MHTN se guardan por `check_id` estable en
+  `menvic_tools.accessibility_mhtn_comments`, separados de
+  `menvic_tools.accessibility_check_state`.
+- Se incluyen 45 comentarios por ítem y una observación general sobre
+  la posible aplicación de requisitos al edificio del Templo.
+- El registro guarda la referencia numérica visible, una categoría orientativa
+  de coordinación, la persona mencionada, el comentario en inglés del correo
+  (con las menciones personales separadas en su propio campo) y la traducción
+  al español. Las categorías no significan conformidad ni aprobación contractual.
+- La interfaz muestra una etiqueta en la columna y ambos idiomas al abrir
+  el detalle del punto. La consulta general aparece bajo el checklist.
+- Los nuevos comentarios son de solo lectura desde la web.
+  La importación y las modificaciones posteriores requieren gestión administrativa.
+- La funcionalidad no cambia los estados, observaciones, responsables,
+  evidencias ni datos de cumplimiento existentes. No modifica el PDF del informe.
+
+### Instalación y validación pendiente
+
+El archivo `docs/sql/accessibility-mhtn-comments-v1.sql` contiene la
+creación de la tabla privada, la carga inicial y la nueva RPC de lectura
+`public.menvic_accessibility_get_mhtn_v1`.
+
+**Antes de ejecutar SQL:** confirmar con el administrador de la base
+`ttnzobxsdeoazhqtiayw` que el esquema privado y la firma/comportamiento
+de `public.menvic_accessibility_login_v1(text,text)` coinciden con lo
+documentado. La conexión disponible en esta sesión no tiene permisos sobre
+este proyecto; por tanto, no está verificado en su base real.
+
+Verificar en un entorno de ensayo: 46 filas para el proyecto, PIN válido,
+PIN inválido (acceso denegado), ausencia de acceso directo del rol `anon`
+a la tabla, visualización de MHTN en escritorio/móvil, y conservación de los
+106 estados originales. Aplicar primero el SQL y después integrar el código
+de la rama en `main` mediante el procedimiento de publicación autorizado.
+No se ha publicado ni aplicado en producción desde esta sesión.
