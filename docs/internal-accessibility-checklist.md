@@ -110,3 +110,15 @@ No incluir ese archivo en el contenido público de `menvic-site`.
 
 La verificación final en navegador de la función con un PIN válido y el
 despliegue GitHub Pages se registran por separado cuando estén confirmados.
+
+
+## Respuestas MENVIC a MHTN y filtrado para impresión — v2 (2026-10-30)
+
+- La primera columna (casilla de revisión) es ahora **solo de lectura** en la interfaz. Los estados y observaciones existentes se conservan; el selector `Cumple / No cumple / N/A` continúa operativo.
+- **Respuesta MENVIC** es una columna independiente de `MHTN` y de `Estado`. Los puntos con comentario MHTN ofrecen un editor para respuesta en español e inglés, con estado interno `Borrador` o `Lista para enviar`. «Lista» no implica envío, aprobación ni cambio contractual.
+- Los borradores se guardan explícitamente (botón o Ctrl+Enter) mediante `public.menvic_accessibility_update_mhtn_response_v1`. Las respuestas se cargan por `public.menvic_accessibility_get_mhtn_responses_v1` y se sincronizan periódicamente con el checklist. Se registran actor y fecha de edición.
+- Los campos de respuesta se encuentran en la tabla privada `menvic_tools.accessibility_mhtn_comments`; no alteran el texto original de MHTN ni los 106 estados de auditoría. Ambos endpoints requieren PIN y los roles web carecen de permiso directo para modificar la tabla.
+- Se distinguen filtros de **Consultas MENVIC**, **Acciones MENVIC**, **Revisión Albert**, **Consultas por responder** y **Respuestas listas**, además de los anteriores.
+- El botón **Imprimir consultas MENVIC** genera un documento específico para las consultas dirigidas a Ricardo/Sandra/Javier/MENVIC (12 puntos y la consulta general del Templo, según la carga inicial). Incluye ambas versiones del comentario MHTN y las respuestas guardadas, o marca su ausencia. Excluye revisiones de Albert y acciones que no son preguntas. Al activar **Consultas por responder**, el botón imprime únicamente las que aún no estén marcadas como `Lista para enviar`.
+- La impresión se realiza en el navegador autenticado; el documento no se guarda en Supabase ni se envía a MHTN. El botón antiguo de PDF del checklist completo permanece disponible.
+- Código de interfaz: `src/components/MhtnResponseEditor.jsx` y `src/mhtnConsultationPrint.js`. SQL versionado en repositorio privado `richimenvic/pymenvic-licensing`, rama `feat/accessibility-mhtn-responses`, archivo `docs/menvic-accessibility-mhtn-responses-v1.sql`.
